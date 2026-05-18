@@ -85,5 +85,7 @@ if (!$user) {
     <a class="logout-btn" href="../auth/logout.php">Logout</a>
 </div>
 
+<a href="edit-profile.php">Edit Profile</a>
+
 </body>
 </html>
