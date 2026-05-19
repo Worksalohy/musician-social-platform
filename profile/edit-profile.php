@@ -11,6 +11,32 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 ?>
 
+<?php if (!empty($_SESSION['success'])): ?>
+
+    <p style="color:green;">
+        <?php echo $_SESSION['success']; ?>
+    </p>
+
+    <?php unset($_SESSION['success']); ?>
+
+<?php endif; ?>
+
+<?php if (!empty($_SESSION['errors'])): ?>
+
+    <?php foreach ($_SESSION['errors'] as $error): ?>
+
+        <p style="color:red;">
+            <?php echo $error; ?>
+        </p>
+
+    <?php endforeach; ?>
+
+    <?php unset($_SESSION['errors']); ?>
+
+<?php endif; ?>
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
