@@ -85,7 +85,28 @@ if (!$user) {
     <a class="logout-btn" href="../auth/logout.php">Logout</a>
 </div>
 
+<div>
+    <form action="upload_avatar.php" method="POST" enctype="multipart/form-data">
+
+        <label>Select Avatar:</label><br>
+    
+        <input type="file" name="avatar" accept="image/*" required>
+
+        <button type="submit">Upload Avatar</button>
+
+    </form>
+</div>
+
 <a href="edit-profile.php">Edit Profile</a>
+
+<?php if (!empty($_SESSION['user']['avatar'])): ?>
+
+    <img 
+        src="<?php echo htmlspecialchars($_SESSION['user']['avatar']); ?>" 
+        width="150"
+        alt="Avatar">
+
+<?php endif; ?>
 
 </body>
 </html>
