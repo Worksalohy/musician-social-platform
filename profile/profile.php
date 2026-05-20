@@ -8,7 +8,7 @@ require_once "../middleware/auth.php";
 $user_id = $_SESSION["user_id"];
 
 // Fetch user information
-$sql = "SELECT username, email, instrument, created_at 
+$sql = "SELECT username, email, instrument, created_at, avatar 
         FROM users 
         WHERE id = :id";
 
@@ -86,7 +86,7 @@ if (!$user) {
 </div>
 
 <div>
-    <form action="upload_avatar.php" method="POST" enctype="multipart/form-data">
+    <form action="../upload-avatar.php" method="POST" enctype="multipart/form-data">
 
         <label>Select Avatar:</label><br>
     
@@ -99,10 +99,10 @@ if (!$user) {
 
 <a href="edit-profile.php">Edit Profile</a>
 
-<?php if (!empty($_SESSION['user']['avatar'])): ?>
+<?php if (!empty($user['avatar'])): ?>
 
     <img 
-        src="<?php echo htmlspecialchars($_SESSION['user']['avatar']); ?>" 
+        src="../<?php echo htmlspecialchars($user['avatar']); ?>" 
         width="150"
         alt="Avatar">
 
