@@ -28,6 +28,7 @@ if (!$user) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../assets/musicculture-default-avatar.png">
     <title>Profile</title>
 
     <style>
@@ -99,14 +100,15 @@ if (!$user) {
 
 <a href="edit-profile.php">Edit Profile</a>
 
-<?php if (!empty($user['avatar'])): ?>
+<?php
+$avatar = "../assets/musicculture-default-avatar.png";
 
-    <img 
-        src="../<?php echo htmlspecialchars($user['avatar']); ?>" 
-        width="150"
-        alt="Avatar">
+if (!empty($user['avatar'])) {
+    $avatar = "../" . $user['avatar'];
+}
+?>
 
-<?php endif; ?>
+<img src="<?= htmlspecialchars($avatar) ?>" alt="Profile Avatar" width="120">
 
 </body>
 </html>
