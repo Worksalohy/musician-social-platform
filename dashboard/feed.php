@@ -73,6 +73,16 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php endif; ?>
 
+    <form action="../posts/toggle_like.php" method="POST">
+
+        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+
+        <button type="submit">
+            Like
+        </button>
+
+    </form>
+
     <hr>
 
 <?php endforeach; ?>
