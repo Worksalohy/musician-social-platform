@@ -2,16 +2,6 @@
 require_once "../middleware/auth.php";
 ?>
 
-<form action="../posts/create_post.php" method="POST">
-    <textarea 
-        name="content" 
-        placeholder="Share something with musicians..."
-        required
-    ></textarea>
-
-    <button type="submit">Post</button>
-</form>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,5 +25,23 @@ require_once "../middleware/auth.php";
     Logout
 </a>
 
+
+<!-- Create post form -->
+<form action="../posts/create_post.php" method="POST">
+    <textarea 
+        name="content" 
+        placeholder="Share something with musicians..."
+        required
+    ></textarea>
+
+    <button type="submit">Post</button>
+</form>
+
+<hr>
+
+    <!-- Feed -->
+    <?php require_once "feed.php"; ?>
+
 </body>
 </html>
+

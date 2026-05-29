@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         "content" => $content
     ]);
 
-    header("Location: ../dashboard.php");
+    header("Location: ../dashboard/dashboard.php");
     exit;
 }
 ?>
