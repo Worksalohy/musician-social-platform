@@ -6,7 +6,12 @@ $sql = "SELECT posts.id,
                posts.content,
                posts.created_at,
                users.username,
-               users.avatar
+               users.avatar,
+               (
+                   SELECT COUNT(*)
+                   FROM likes
+                   WHERE likes.post_id = posts.id
+               ) AS like_count
         FROM posts
         JOIN users
         ON posts.user_id = users.id
@@ -82,6 +87,9 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </button>
 
     </form>
+    <p>
+        <?= $post['like_count'] ?> likes
+    </p>
 
     <hr>
 
