@@ -65,6 +65,14 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php endif; ?>
 
+    <?php if ($_SESSION['user_id'] === $post['user_id']): ?>
+
+        <a href="../posts/edit_post.php?id=<?= $post['id'] ?>">
+            Edit
+        </a>
+
+    <?php endif; ?>
+
     <hr>
 
 <?php endforeach; ?>
