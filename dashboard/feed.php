@@ -54,7 +54,9 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- About comment -->
         <?php
-        $sql = "SELECT comments.content,
+        $sql = "SELECT comments.id,
+                       comments.user_id,
+                       comments.content,
                        comments.created_at,
                        users.username
                 FROM comments
@@ -155,9 +157,27 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         </div>
 
+        <?php if ($_SESSION['user_id'] === $comment['user_id']): ?>
+
+            <form action="../comments/delete_comment.php" method="POST">
+
+                <input
+                    type="hidden"
+                    name="comment_id"
+                    value="<?= $comment['id'] ?>"
+                >
+
+                <button type="submit">
+                    Delete
+                </button>
+
+            </form>
+
+        <?php endif; ?>
+
     <?php endforeach; ?>
     <p><?= $post['like_count'] ?> likes</p>
-<p><?= $post['comment_count'] ?> comments</p>
+    <p><?= $post['comment_count'] ?> comments</p>
 
 </div>
 
