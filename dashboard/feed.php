@@ -21,7 +21,9 @@ $stmt = $pdo->query($sql);
 
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
 ?>
+
 
 <?php foreach ($posts as $post): ?>
 
@@ -44,6 +46,25 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             >
 
         <?php endif; ?>
+
+        <!-- About comment -->
+        <?php
+        $sql = "SELECT comments.content,
+                       comments.created_at,
+                       users.username
+                FROM comments
+                JOIN users
+                ON comments.user_id = users.id
+                WHERE comments.post_id = :post_id
+                ORDER BY comments.created_at ASC";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            "post_id" => $post['id']
+        ]);
+
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ?>
 
         <h3>
             <?= htmlspecialchars($post["username"]) ?>
@@ -91,7 +112,50 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?= $post['like_count'] ?> likes
     </p>
 
-    <hr>
+    <form action="../comments/create_comment.php" method="POST">
 
+    <input
+        type="hidden"
+        name="post_id"
+        value="<?= $post['id'] ?>"
+    >
+
+    <textarea
+        name="content"
+        placeholder="Write a comment..."
+        required
+    ></textarea>
+
+    <button type="submit">
+        Comment
+    </button>
+
+</form>
+
+<div class="comments">
+
+    <?php foreach ($comments as $comment): ?>
+
+        <div class="comment">
+
+            <strong>
+                <?= htmlspecialchars($comment['username']); ?>
+            </strong>
+
+            <p>
+                <?= nl2br(htmlspecialchars($comment['content'])); ?>
+            </p>
+
+            <small>
+                <?= htmlspecialchars($comment['created_at']); ?>
+            </small>
+
+        </div>
+
+    <?php endforeach; ?>
+
+</div>
+
+<hr>
 <?php endforeach; ?>
 
