@@ -1,5 +1,6 @@
 <?php
 require_once "../config/db.php";
+$user_id = $_SESSION['user_id'];
 
 $sql = "SELECT posts.id,
                posts.user_id,
@@ -14,6 +15,12 @@ $sql = "SELECT posts.id,
                ) AS like_count,
                (
                     SELECT COUNT(*)
+                    FROM likes
+                    WHERE likes.post_id = posts.id
+                    AND likes.user_id = :user_id
+               )AS liked_by_user,
+               (
+                    SELECT COUNT(*)
                     FROM comments
                     WHERE comments.post_id = posts.id
                ) AS comment_count
@@ -22,11 +29,13 @@ $sql = "SELECT posts.id,
         ON posts.user_id = users.id
         ORDER BY posts.created_at DESC";
 
-$stmt = $pdo->query($sql);
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+    "user_id" => $user_id
+]);
 
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 
 
@@ -111,7 +120,11 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
 
         <button type="submit">
-            Like
+            <?php if ($post['liked_by_user']): ?>
+                Unlike
+            <?php else: ?>
+                Like
+            <?php endif; ?>
         </button>
 
     </form>
