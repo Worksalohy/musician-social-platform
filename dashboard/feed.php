@@ -11,7 +11,12 @@ $sql = "SELECT posts.id,
                    SELECT COUNT(*)
                    FROM likes
                    WHERE likes.post_id = posts.id
-               ) AS like_count
+               ) AS like_count,
+               (
+                    SELECT COUNT(*)
+                    FROM comments
+                    WHERE comments.post_id = posts.id
+               ) AS comment_count
         FROM posts
         JOIN users
         ON posts.user_id = users.id
@@ -108,9 +113,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </button>
 
     </form>
-    <p>
-        <?= $post['like_count'] ?> likes
-    </p>
+
 
     <form action="../comments/create_comment.php" method="POST">
 
@@ -153,6 +156,8 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
     <?php endforeach; ?>
+    <p><?= $post['like_count'] ?> likes</p>
+<p><?= $post['comment_count'] ?> comments</p>
 
 </div>
 
