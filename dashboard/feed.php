@@ -61,26 +61,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <?php endif; ?>
 
-        <!-- About comment -->
-        <?php
-        $sql = "SELECT comments.id,
-                       comments.user_id,
-                       comments.content,
-                       comments.created_at,
-                       users.username
-                FROM comments
-                JOIN users
-                ON comments.user_id = users.id
-                WHERE comments.post_id = :post_id
-                ORDER BY comments.created_at ASC";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            "post_id" => $post['id']
-        ]);
-
-        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        ?>
+        
 
         <h3>
             <?= htmlspecialchars($post["username"]) ?>
@@ -129,6 +110,27 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     </form>
 
+    <!-- About comment -->
+        <?php
+            $sql = "SELECT comments.id,
+                       comments.user_id,
+                       comments.content,
+                       comments.created_at,
+                       users.username,
+                       users.avatar
+                FROM comments
+                JOIN users
+                ON comments.user_id = users.id
+                WHERE comments.post_id = :post_id
+                ORDER BY comments.created_at ASC";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                "post_id" => $post['id']
+            ]);
+
+            $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ?>
 
     <form action="../comments/create_comment.php" method="POST">
 
@@ -151,10 +153,19 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </form>
 
 <div class="comments">
+    
 
     <?php foreach ($comments as $comment): ?>
 
         <div class="comment">
+            <img
+                src="<?= !empty($comment['avatar'])
+                ? '../' . htmlspecialchars($comment['avatar'])
+                : '../assets/musicculture-default-avatar.png'; ?>"
+                alt="Avatar"
+                width="40"
+                height="40"
+            >
 
             <strong>
                 <?= htmlspecialchars($comment['username']); ?>
