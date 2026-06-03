@@ -3,11 +3,11 @@
 require_once "../middleware/auth.php";
 require_once "../config/db.php";
 
-$userId = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $postId = $_POST['post_id'];
+    $post_id = $_POST['post_id'];
 
     // Check existing like
     $stmt = $pdo->prepare("
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         AND post_id = ?
     ");
 
-    $stmt->execute([$userId, $postId]);
+    $stmt->execute([$user_id, $post_id]);
 
     $existingLike = $stmt->fetch();
 
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             AND post_id = ?
         ");
 
-        $stmt->execute([$userId, $postId]);
+        $stmt->execute([$user_id, $post_id]);
 
     } else {
 
@@ -39,7 +39,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?)
         ");
 
-        $stmt->execute([$userId, $postId]);
+        $stmt->execute([$user_id, $post_id]);
+
+        // Find the owner of the post
+        $stmt = $pdo->prepare("
+            SELECT user_id
+            FROM posts
+            WHERE id = ?
+        ");
+        $stmt->execute([$post_id]);
+
+        $post_owner = $stmt->fetchColumn();
+
+        if ($post_owner != $user_id) {
+            $stmt = $pdo->prepare("
+                INSERT INTO notifications
+                (user_id, actor_id, post_id, type)
+                VALUES (?, ?, ?, ?)
+            ");
+
+            $stmt->execute([
+                $post_owner,
+                $user_id,
+                $post_id,
+                'like'
+            ]);
+        }
+
     }
 
     header("Location: ../dashboard/dashboard.php");

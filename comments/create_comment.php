@@ -25,5 +25,30 @@ $stmt->execute([
     "content" => $content
 ]);
 
+// Find the owner of the post
+$stmt = $pdo->prepare("
+    SELECT user_id
+    FROM posts
+    WHERE id = ?
+");
+$stmt->execute([$post_id]);
+
+$post_owner = $stmt->fetchColumn();
+
+if ($post_owner != $user_id) {
+    $stmt = $pdo->prepare("
+        INSERT INTO notifications
+        (user_id, actor_id, post_id, type)
+        VALUES (?, ?, ?, ?)
+    ");
+
+    $stmt->execute([
+        $post_owner,
+        $user_id,
+        $post_id,
+        'comment'
+    ]);
+}
+
 header("Location: ../dashboard/dashboard.php");
 exit;
