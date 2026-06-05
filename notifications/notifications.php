@@ -3,6 +3,16 @@
 require_once "../middleware/auth.php";
 require_once "../config/db.php";
 
+$stmt = $pdo->prepare("
+    UPDATE notifications
+    SET is_read = 1
+    WHERE user_id = ?
+    AND is_read = 0
+");
+
+$stmt->execute([$_SESSION['user_id']]);
+
+
 $user_id = $_SESSION['user_id'];
 
 $sql = "
@@ -46,10 +56,10 @@ $notifications = $stmt->fetchAll();
         <?php
             $avatar = !empty($notification['avatar'])
             ? "../" . $notification['avatar']
-            : null;
+            : "../assets/musicculture-default-avatar.png";
         ?>
 
-        <div class="notification">
+        <div class="<?= $notification['is_read'] ? 'notification' : 'notification unread' ?>">
 
             <?php if ($avatar): ?>
                 <img
