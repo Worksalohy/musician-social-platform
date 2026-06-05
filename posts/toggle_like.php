@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         $stmt->execute([$user_id, $post_id]);
+        $liked = false;
 
     } else {
 
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         $stmt->execute([$user_id, $post_id]);
+        $liked = true;
 
         // Find the owner of the post
         $stmt = $pdo->prepare("
@@ -68,6 +70,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 
-    header("Location: ../dashboard/dashboard.php");
-    exit;
+    // Get updated like count
+$stmt = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM likes
+    WHERE post_id = ?
+");
+
+$stmt->execute([$post_id]);
+
+$count = $stmt->fetchColumn();
+
+header('Content-Type: application/json');
+
+echo json_encode([
+    'liked' => $liked,
+    'count' => $count
+]);
+
+exit;
 }

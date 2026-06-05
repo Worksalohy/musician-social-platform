@@ -96,11 +96,15 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php endif; ?>
 
-    <form action="../posts/toggle_like.php" method="POST">
+    <form class="like-form">
 
-        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+        <input
+            type="hidden"
+            name="post_id"
+            value="<?= $post['id'] ?>"
+        >
 
-        <button type="submit">
+        <button type="submit" class="like-button">
             <?php if ($post['liked_by_user']): ?>
                 Unlike
             <?php else: ?>
@@ -154,7 +158,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="comments">
     
-
+<!-- Display comment -->
     <?php foreach ($comments as $comment): ?>
 
         <div class="comment">
@@ -200,7 +204,9 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
 
     <?php endforeach; ?>
-    <p><?= $post['like_count'] ?> likes</p>
+    <p class="like-count">
+        <?= $post['like_count'] ?> likes
+    </p>
     <p><?= $post['comment_count'] ?> comments</p>
 
 </div>

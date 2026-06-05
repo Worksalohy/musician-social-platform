@@ -1,12 +1,13 @@
 <?php
 require_once "../middleware/auth.php";
+require_once "../config/db.php";
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
     <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <title>Dashboard</title>
+    <title>Dashboard | Music Culture</title>
 </head>
 <body>
 
@@ -16,6 +17,27 @@ require_once "../middleware/auth.php";
 </h1>
 
 <p>You are logged in.</p>
+
+<?php
+$stmt = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM notifications
+    WHERE user_id = ?
+    AND is_read = 0
+");
+
+$stmt->execute([$_SESSION['user_id']]);
+
+$unreadCount = $stmt->fetchColumn();
+?>
+
+<a href="../notifications/notifications.php">
+    Notifications
+    <?php if ($unreadCount > 0): ?>
+        (<?= $unreadCount ?>)
+    <?php endif; ?>
+</a>
+
 
 <a class="profile-link" href="../profile/profile.php">
     My profile
@@ -41,7 +63,43 @@ require_once "../middleware/auth.php";
 
     <!-- Feed -->
     <?php require_once "feed.php"; ?>
+    
+    <!-- Javascript -->
+    <script>
+        document.querySelectorAll('.like-form').forEach(form => {
 
+        form.addEventListener('submit', async function(e) {
+
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            const response = await fetch(
+                '../posts/toggle_like.php',
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            );
+
+        const data = await response.json();
+
+        const button =
+            this.querySelector('.like-button');
+
+        const likeCount =
+            this.parentElement.querySelector('.like-count');
+
+            button.textContent =
+                data.liked ? 'Unlike' : 'Like';
+
+            likeCount.textContent =
+                data.count + ' likes';
+
+        });
+
+    });
+    </script>
 </body>
 </html>
 
