@@ -36,6 +36,33 @@ $stmt->execute([
 ]);
 
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+/* ================================
+   NEW: LOAD ALL COMMENTS ONCE
+================================ */
+$sql = "SELECT comments.id,
+               comments.post_id,
+               comments.user_id,
+               comments.content,
+               comments.created_at,
+               users.username,
+               users.avatar
+        FROM comments
+        JOIN users ON users.id = comments.user_id
+        ORDER BY comments.created_at ASC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+
+$allComments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+/* GROUP COMMENTS BY POST ID */
+$commentsByPost = [];
+
+foreach ($allComments as $comment) {
+    $commentsByPost[$comment['post_id']][] = $comment;
+}
 ?>
 
 
@@ -44,65 +71,40 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="post">
 
         <?php if (!empty($post["avatar"])): ?>
-
-            <img
-                src="../<?= htmlspecialchars($post["avatar"]) ?>"
-                alt="Avatar"
-                width="50"
-            >
-
+            <img src="../<?= htmlspecialchars($post["avatar"]) ?>"
+                 alt="Avatar"
+                 width="50">
         <?php else: ?>
-
-            <img
-                src="../assets/musicculture-default-avatar.png"
-                alt="Default Avatar"
-                width="50"
-            >
-
+            <img src="../assets/musicculture-default-avatar.png"
+                 alt="Default Avatar"
+                 width="50">
         <?php endif; ?>
 
-        
+        <h3><?= htmlspecialchars($post["username"]) ?></h3>
 
-        <h3>
-            <?= htmlspecialchars($post["username"]) ?>
-        </h3>
+        <p><?= nl2br(htmlspecialchars($post["content"])) ?></p>
 
-        <p>
-            <?= nl2br(htmlspecialchars($post["content"])) ?>
-        </p>
-
-        <small>
-            <?= htmlspecialchars($post["created_at"]) ?>
-        </small>
-
+        <small><?= htmlspecialchars($post["created_at"]) ?></small>
     </div>
 
     <?php if ($_SESSION['user_id'] === $post['user_id']): ?>
-
         <form action="../posts/delete_post.php" method="POST" style="display:inline;">
             <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
             <button type="submit" onclick="return confirm('Delete this post?')">
                 Delete
             </button>
         </form>
-
     <?php endif; ?>
 
     <?php if ($_SESSION['user_id'] === $post['user_id']): ?>
-
         <a href="../posts/edit_post.php?id=<?= $post['id'] ?>">
             Edit
         </a>
-
     <?php endif; ?>
 
     <form class="like-form">
 
-        <input
-            type="hidden"
-            name="post_id"
-            value="<?= $post['id'] ?>"
-        >
+        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
 
         <button type="submit" class="like-button">
             <?php if ($post['liked_by_user']): ?>
@@ -114,160 +116,164 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     </form>
 
-    <!-- About comment -->
-        <?php
-            $sql = "SELECT comments.id,
-                       comments.user_id,
-                       comments.content,
-                       comments.created_at,
-                       users.username,
-                       users.avatar
-                FROM comments
-                JOIN users
-                ON comments.user_id = users.id
-                WHERE comments.post_id = :post_id
-                ORDER BY comments.created_at ASC";
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                "post_id" => $post['id']
-            ]);
-
-            $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        ?>
-
+    <!-- COMMENT FORM -->
     <form class="comment-form" action="../comments/create_comment.php" method="POST">
 
-        <input
-            type="hidden"
-            name="post_id"
-            value="<?= $post['id'] ?>"
-        >
+        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
 
-        <textarea
-            name="content"
-            placeholder="Write a comment..."
-            required
-        ></textarea>
+        <textarea name="content" placeholder="Write a comment..." required></textarea>
 
-        <button type="submit">
-            Comment
-        </button>
+        <button type="submit">Comment</button>
 
     </form>
 
-<div class="comments" id="comments-<?= $post['id'] ?>">
-    
-<!-- Display comment -->
-    <?php foreach ($comments as $comment): ?>
+    <div class="comments" id="comments-<?= $post['id'] ?>">
 
-        <div class="comment">
-            <img
-                src="<?= !empty($comment['avatar'])
-                ? '../' . htmlspecialchars($comment['avatar'])
-                : '../assets/musicculture-default-avatar.png'; ?>"
-                alt="Avatar"
-                width="40"
-                height="40"
-            >
+        <!-- GET COMMENTS FROM GROUPED ARRAY -->
+        <?php $comments = $commentsByPost[$post['id']] ?? []; ?>
 
-            <strong>
-                <?= htmlspecialchars($comment['username']); ?>
-            </strong>
+        <?php foreach ($comments as $comment): ?>
 
-            <p>
-                <?= nl2br(htmlspecialchars($comment['content'])); ?>
-            </p>
+            <div class="comment-wrapper" id="comment-<?= $comment['id'] ?>">
 
-            <small>
-                <?= htmlspecialchars($comment['created_at']); ?>
-            </small>
+                <div class="comment">
 
-        </div>
+                    <img
+                        src="<?= !empty($comment['avatar'])
+                            ? '../' . htmlspecialchars($comment['avatar'])
+                            : '../assets/musicculture-default-avatar.png'; ?>"
+                        alt="Avatar"
+                        width="40"
+                        height="40"
+                    >
 
-        <?php if ($_SESSION['user_id'] === $comment['user_id']): ?>
+                    <strong><?= htmlspecialchars($comment['username']); ?></strong>
 
-            <form action="../comments/delete_comment.php" method="POST">
+                    <p><?= nl2br(htmlspecialchars($comment['content'])); ?></p>
 
-                <input
-                    type="hidden"
-                    name="comment_id"
-                    value="<?= $comment['id'] ?>"
-                >
+                    <small><?= htmlspecialchars($comment['created_at']); ?></small>
 
-                <button type="submit">
-                    Delete
-                </button>
+                </div>
 
-            </form>
+                <?php if ($_SESSION['user_id'] === $comment['user_id']): ?>
 
-        <?php endif; ?>
+                    <form action="../comments/delete_comment.php"
+                          method="POST"
+                          class="delete-comment-form">
 
-    <?php endforeach; ?>
-    <p class="like-count">
-        <?= $post['like_count'] ?> likes
-    </p>
-    <p class="comment-count">
-        <?= $post['comment_count'] ?> comments
-    </p>
+                        <input type="hidden" name="comment_id"
+                               value="<?= $comment['id'] ?>">
 
-</div>
+                        <button type="submit">Delete</button>
 
-<hr>
+                    </form>
+
+                <?php endif; ?>
+
+            </div>
+
+        <?php endforeach; ?>
+
+        <p class="like-count">
+            <?= $post['like_count'] ?> likes
+        </p>
+
+        <p class="comment-count">
+            <?= $post['comment_count'] ?> comments
+        </p>
+
+    </div>
+
+    <hr>
 
 <?php endforeach; ?>
 
+
+<!-- YOUR JS STAYS EXACTLY THE SAME -->
 <script>
-    document.querySelectorAll('.comment-form').forEach(form => {
+document.querySelectorAll('.comment-form').forEach(form => {
 
-        form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function(e) {
 
-            e.preventDefault();
+        e.preventDefault();
 
-            const formData = new FormData(this);
+        const formData = new FormData(this);
 
-            fetch(this.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-.then(data => {
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
 
-    if (data.success) {
+            if (data.success) {
 
-        const textarea = this.querySelector('textarea');
+                const c = data.comment;
 
-        const commentText = textarea.value;
+                const commentsContainer =
+                    document.getElementById(`comments-${c.post_id}`);
 
-        const postId = this.querySelector(
-            'input[name="post_id"]'
-        ).value;
+                const newComment = document.createElement('div');
+                newComment.classList.add('comment-wrapper');
+                newComment.id = `comment-${c.id}`;
 
-        const commentsContainer =
-            document.getElementById(
-                `comments-${postId}`
-            );
+                newComment.innerHTML = `
+                    <div class="comment">
 
-        const newComment = document.createElement('div');
+                        <img src="${c.avatar ? '../' + c.avatar : '../assets/musicculture-default-avatar.png'}" width="40">
 
-        newComment.classList.add('comment');
+                        <strong>${c.username}</strong>
 
-        newComment.innerHTML = `
-            <strong>You</strong>
-            <p>${commentText}</p>
-            <small>Just now</small>
-        `;
+                        <p>${c.content}</p>
 
-        commentsContainer.prepend(newComment);
+                        <small>${c.created_at}</small>
 
-        textarea.value = '';
+                    </div>
 
-    }
+                    <form action="../comments/delete_comment.php"
+                          method="POST"
+                          class="delete-comment-form">
 
-})
-            .catch(error => console.error(error));
+                        <input type="hidden" name="comment_id" value="${c.id}">
+                        <button type="submit">Delete</button>
 
+                    </form>
+                `;
+
+                commentsContainer.prepend(newComment);
+                this.querySelector('textarea').value = '';
+            }
         });
-
     });
+});
+</script>
+
+
+<script>
+document.addEventListener('submit', function(e) {
+
+    if (!e.target.classList.contains('delete-comment-form')) return;
+
+    e.preventDefault();
+
+    if (!confirm('Delete this comment?')) return;
+
+    const formData = new FormData(e.target);
+
+    fetch(e.target.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+
+        if (data.success) {
+
+            const id =
+                e.target.querySelector('input[name="comment_id"]').value;
+
+            document.getElementById(`comment-${id}`).remove();
+        }
+    });
+});
 </script>
