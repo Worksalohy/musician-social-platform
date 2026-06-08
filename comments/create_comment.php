@@ -50,5 +50,10 @@ if ($post_owner != $user_id) {
     ]);
 }
 
-header("Location: ../dashboard/dashboard.php");
+header('Content-Type: application/json');
+
+echo json_encode([
+    'success' => true
+]);
+
 exit;

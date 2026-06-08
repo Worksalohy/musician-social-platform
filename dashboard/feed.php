@@ -136,27 +136,27 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ?>
 
-    <form action="../comments/create_comment.php" method="POST">
+    <form class="comment-form" action="../comments/create_comment.php" method="POST">
 
-    <input
-        type="hidden"
-        name="post_id"
-        value="<?= $post['id'] ?>"
-    >
+        <input
+            type="hidden"
+            name="post_id"
+            value="<?= $post['id'] ?>"
+        >
 
-    <textarea
-        name="content"
-        placeholder="Write a comment..."
-        required
-    ></textarea>
+        <textarea
+            name="content"
+            placeholder="Write a comment..."
+            required
+        ></textarea>
 
-    <button type="submit">
-        Comment
-    </button>
+        <button type="submit">
+            Comment
+        </button>
 
-</form>
+    </form>
 
-<div class="comments">
+<div class="comments" id="comments-<?= $post['id'] ?>">
     
 <!-- Display comment -->
     <?php foreach ($comments as $comment): ?>
@@ -207,10 +207,67 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <p class="like-count">
         <?= $post['like_count'] ?> likes
     </p>
-    <p><?= $post['comment_count'] ?> comments</p>
+    <p class="comment-count">
+        <?= $post['comment_count'] ?> comments
+    </p>
 
 </div>
 
 <hr>
+
 <?php endforeach; ?>
 
+<script>
+    document.querySelectorAll('.comment-form').forEach(form => {
+
+        form.addEventListener('submit', function(e) {
+
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+.then(data => {
+
+    if (data.success) {
+
+        const textarea = this.querySelector('textarea');
+
+        const commentText = textarea.value;
+
+        const postId = this.querySelector(
+            'input[name="post_id"]'
+        ).value;
+
+        const commentsContainer =
+            document.getElementById(
+                `comments-${postId}`
+            );
+
+        const newComment = document.createElement('div');
+
+        newComment.classList.add('comment');
+
+        newComment.innerHTML = `
+            <strong>You</strong>
+            <p>${commentText}</p>
+            <small>Just now</small>
+        `;
+
+        commentsContainer.prepend(newComment);
+
+        textarea.value = '';
+
+    }
+
+})
+            .catch(error => console.error(error));
+
+        });
+
+    });
+</script>
