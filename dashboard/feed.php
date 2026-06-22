@@ -68,7 +68,7 @@ foreach ($allComments as $comment) {
 
 <?php foreach ($posts as $post): ?>
 
-    <div class="post">
+    <div class="post-container" id="post-<?= $post['id'] ?>">
 
         <?php if (!empty($post["avatar"])): ?>
             <img src="../<?= htmlspecialchars($post["avatar"]) ?>"
@@ -80,114 +80,162 @@ foreach ($allComments as $comment) {
                  width="50">
         <?php endif; ?>
 
-        <h3><?= htmlspecialchars($post["username"]) ?></h3>
+        <h3>
+            <a href="../profile/profile.php?id=<?= $post['user_id'] ?>">
+                <?= htmlspecialchars($post["username"]) ?>
+            </a>
+        </h3>
 
         <p><?= nl2br(htmlspecialchars($post["content"])) ?></p>
 
         <small><?= htmlspecialchars($post["created_at"]) ?></small>
-    </div>
 
-    <?php if ($_SESSION['user_id'] === $post['user_id']): ?>
-        <form action="../posts/delete_post.php" method="POST" style="display:inline;">
-            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-            <button type="submit" onclick="return confirm('Delete this post?')">
-                Delete
+        <?php if ($post['user_id'] == $_SESSION['user_id']) : ?>
+            <button
+                class="delete-post-btn"
+                data-post-id="<?= $post['id'] ?>">
+                    Delete
             </button>
+        <?php endif; ?>
+
+        <?php if ($_SESSION['user_id'] === $post['user_id']): ?>
+            <a href="../posts/edit_post.php?id=<?= $post['id'] ?>">
+                Edit
+            </a>
+        <?php endif; ?>
+
+        <form class="like-form">
+
+            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+
+            <button type="submit" class="like-button">
+                <?php if ($post['liked_by_user']): ?>
+                    Unlike
+                <?php else: ?>
+                    Like
+                <?php endif; ?>
+            </button>
+
         </form>
-    <?php endif; ?>
 
-    <?php if ($_SESSION['user_id'] === $post['user_id']): ?>
-        <a href="../posts/edit_post.php?id=<?= $post['id'] ?>">
-            Edit
-        </a>
-    <?php endif; ?>
+        <!-- COMMENT FORM -->
+        <form class="comment-form" action="../comments/create_comment.php" method="POST">
 
-    <form class="like-form">
+            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
 
-        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+            <textarea name="content" placeholder="Write a comment..." required></textarea>
 
-        <button type="submit" class="like-button">
-            <?php if ($post['liked_by_user']): ?>
-                Unlike
-            <?php else: ?>
-                Like
-            <?php endif; ?>
-        </button>
+            <button class="comment-btn">
+                💬
+                <span class="comment-count-badge"
+                    data-post-id="<?= $post['id'] ?>">
+                    <?= $post['comment_count'] ?>
+                </span>
+            </button>
 
-    </form>
+        </form>
 
-    <!-- COMMENT FORM -->
-    <form class="comment-form" action="../comments/create_comment.php" method="POST">
+        <div class="comments" id="comments-<?= $post['id'] ?>">
 
-        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+            <!-- GET COMMENTS FROM GROUPED ARRAY -->
+            <?php $comments = $commentsByPost[$post['id']] ?? []; ?>
 
-        <textarea name="content" placeholder="Write a comment..." required></textarea>
+            <?php foreach ($comments as $comment): ?>
 
-        <button type="submit">Comment</button>
+                <div class="comment-wrapper" id="comment-<?= $comment['id'] ?>">
 
-    </form>
+                    <div class="comment">
 
-    <div class="comments" id="comments-<?= $post['id'] ?>">
+                        <img
+                            src="<?= !empty($comment['avatar'])
+                                ? '../' . htmlspecialchars($comment['avatar'])
+                                : '../assets/musicculture-default-avatar.png'; ?>"
+                            alt="Avatar"
+                            width="40"
+                            height="40"
+                        >
 
-        <!-- GET COMMENTS FROM GROUPED ARRAY -->
-        <?php $comments = $commentsByPost[$post['id']] ?? []; ?>
+                        <strong><?= htmlspecialchars($comment['username']); ?></strong>
 
-        <?php foreach ($comments as $comment): ?>
+                        <p><?= nl2br(htmlspecialchars($comment['content'])); ?></p>
 
-            <div class="comment-wrapper" id="comment-<?= $comment['id'] ?>">
+                        <small><?= htmlspecialchars($comment['created_at']); ?></small>
 
-                <div class="comment">
+                    </div>
 
-                    <img
-                        src="<?= !empty($comment['avatar'])
-                            ? '../' . htmlspecialchars($comment['avatar'])
-                            : '../assets/musicculture-default-avatar.png'; ?>"
-                        alt="Avatar"
-                        width="40"
-                        height="40"
-                    >
+                    <?php if ($_SESSION['user_id'] === $comment['user_id']): ?>
 
-                    <strong><?= htmlspecialchars($comment['username']); ?></strong>
+                        <form action="../comments/delete_comment.php"
+                            method="POST"
+                            class="delete-comment-form">
 
-                    <p><?= nl2br(htmlspecialchars($comment['content'])); ?></p>
+                            <input type="hidden" name="comment_id"
+                               value="<?= $comment['id'] ?>">
 
-                    <small><?= htmlspecialchars($comment['created_at']); ?></small>
+                            <button type="submit">Delete</button>
+
+                        </form>
+
+                    <?php endif; ?>
 
                 </div>
 
-                <?php if ($_SESSION['user_id'] === $comment['user_id']): ?>
+            <?php endforeach; ?>
 
-                    <form action="../comments/delete_comment.php"
-                          method="POST"
-                          class="delete-comment-form">
+            <p class="like-count">
+                <?= $post['like_count'] ?> likes
+            </p>
 
-                        <input type="hidden" name="comment_id"
-                               value="<?= $comment['id'] ?>">
+            <p class="comment-total">
+                <?= $post['comment_count'] ?> comments
+            </p>
 
-                        <button type="submit">Delete</button>
+        </div>
 
-                    </form>
-
-                <?php endif; ?>
-
-            </div>
-
-        <?php endforeach; ?>
-
-        <p class="like-count">
-            <?= $post['like_count'] ?> likes
-        </p>
-
-        <p class="comment-count">
-            <?= $post['comment_count'] ?> comments
-        </p>
-
+        <hr>
     </div>
-
-    <hr>
 
 <?php endforeach; ?>
 
+<script>
+    document.addEventListener("click", function (e) {
+
+    if (e.target.classList.contains("delete-post-btn")) {
+
+        if (!confirm("Delete this post?")) {
+            return;
+        }
+
+        const postId = e.target.dataset.postId;
+
+        fetch("../posts/delete_post.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "post_id=" + encodeURIComponent(postId)
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.success) {
+
+                document
+                    .getElementById("post-" + postId)
+                    .remove();
+
+            } else {
+
+                alert(data.message);
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+});
+</script>
 
 <!-- YOUR JS STAYS EXACTLY THE SAME -->
 <script>
@@ -242,6 +290,23 @@ document.querySelectorAll('.comment-form').forEach(form => {
 
                 commentsContainer.prepend(newComment);
                 this.querySelector('textarea').value = '';
+
+                const badge = document.querySelector(
+                    `.comment-count-badge[data-post-id="${c.post_id}"]`
+                );
+
+                const total = document.querySelector(
+                    `.comment-total[data-post-id="${c.post_id}"]`
+                );
+
+                if (badge) {
+                    badge.textContent = data.comment_count;
+                }
+
+                if (total) {
+                    total.textContent = `${data.comment_count} comments`;
+                }
+
             }
         });
     });
