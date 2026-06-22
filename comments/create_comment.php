@@ -81,10 +81,23 @@ if ($post_owner != $user_id) {
 }
 
 
-// 6. Return response
+// 6. Get updated comment count
+$stmt = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM comments
+    WHERE post_id = ?
+");
+
+$stmt->execute([$post_id]);
+
+$comment_count = $stmt->fetchColumn();
+
+
+// 7. Return response
 echo json_encode([
     'success' => true,
-    'comment' => $comment
+    'comment' => $comment,
+    'comment_count' => $comment_count
 ]);
 
 exit;
