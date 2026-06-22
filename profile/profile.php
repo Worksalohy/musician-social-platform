@@ -5,15 +5,16 @@ require_once "../config/db.php";
 require_once "../middleware/auth.php";
 
 // Get logged-in user ID
-$user_id = $_SESSION["user_id"];
+$profile_user_id = $_GET['id'] ?? $_SESSION['user_id'];
+$isOwnProfile = ($profile_user_id == $_SESSION['user_id']);
 
 // Fetch user information
-$sql = "SELECT username, email, instrument, created_at, avatar 
+$sql = "SELECT id, username, email, instrument, created_at, avatar 
         FROM users 
         WHERE id = :id";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(["id" => $user_id]);
+$stmt->execute(["id" => $profile_user_id]);
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -22,6 +23,23 @@ if (!$user) {
     die("User not found.");
 }
 ?>
+
+<?php
+$isFollowing = false;
+
+$stmt = $pdo->prepare("
+    SELECT follower_id
+    FROM follows
+    WHERE follower_id = ? AND following_id = ?
+");
+
+$stmt->execute([$_SESSION['user_id'], $profile_user_id]);
+
+if ($stmt->fetch()) {
+    $isFollowing = true;
+}
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +91,11 @@ if (!$user) {
 <body>
 
 <div class="profile-card">
-    <h1>My Profile</h1>
+    <h1>
+    <?= $isOwnProfile
+        ? 'My Profile'
+        : htmlspecialchars($user['username']) . "'s Profile" ?>
+    </h1>
 
     <p><strong>Username:</strong> <?= htmlspecialchars($user["username"]) ?></p>
 
@@ -83,7 +105,6 @@ if (!$user) {
 
     <p><strong>Member since:</strong> <?= htmlspecialchars($user["created_at"]) ?></p>
 
-    <a class="logout-btn" href="../auth/logout.php">Logout</a>
 </div>
 
 <div>
@@ -98,7 +119,13 @@ if (!$user) {
     </form>
 </div>
 
-<a href="edit-profile.php">Edit Profile</a>
+<?php if ($isOwnProfile): ?>
+
+    <a class="logout-btn" href="../auth/logout.php">Logout</a>
+
+    <a href="edit-profile.php">Edit Profile</a>
+
+<?php endif; ?>
 
 <?php
 $avatar = "../assets/musicculture-default-avatar.png";
@@ -109,6 +136,38 @@ if (!empty($user['avatar'])) {
 ?>
 
 <img src="<?= htmlspecialchars($avatar) ?>" alt="Profile Avatar" width="120">
+
+<?php if ($_SESSION['user_id'] != $user['id']): ?>
+
+    <button id="follow-btn" data-user-id="<?= $user['id'] ?>">
+        <?= $isFollowing ? "Unfollow" : "Follow" ?>
+    </button>
+
+<?php endif; ?>
+
+<script>
+    document.getElementById("follow-btn")?.addEventListener("click", function () {
+
+    const userId = this.dataset.userId;
+
+    fetch("../users/follow-toggle.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "user_id=" + encodeURIComponent(userId)
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.success) {
+            this.textContent =
+                data.action === "follow" ? "Unfollow" : "Follow";
+        }
+
+    });
+});
+</script>
 
 </body>
 </html>
