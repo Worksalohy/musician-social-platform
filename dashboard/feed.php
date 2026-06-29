@@ -186,7 +186,8 @@ foreach ($allComments as $comment) {
                 <?= $post['like_count'] ?> likes
             </p>
 
-            <p class="comment-total">
+            <p class="comment-total"
+                data-post-id="<?= $post['id'] ?>">
                 <?= $post['comment_count'] ?> comments
             </p>
 
