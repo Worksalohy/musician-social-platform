@@ -167,7 +167,38 @@ if (!empty($user['avatar'])) {
 
     });
 });
+
+function loadUnreadMessages() {
+    fetch('/messages/get-unread-message.php')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) return;
+
+            const badge = document.getElementById('messageBadge');
+
+            if (data.unread_count > 0) {
+                badge.textContent = data.unread_count;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.textContent = '';
+                badge.style.display = 'none';
+            }
+        })
+        .catch(error => console.error(error));
+}
+
+// Load immediately
+loadUnreadMessages();
+
+// Check every 3 seconds
+setInterval(loadUnreadMessages, 3000);
+
 </script>
+
+<a href="../messages/inbox.php">
+    Messages
+    <span id="messageBadge" style="display:none;"></span>
+</a>
 
 </body>
 </html>

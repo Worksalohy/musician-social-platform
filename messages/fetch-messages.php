@@ -10,6 +10,20 @@ if (!$other_user_id) {
     exit;
 }
 
+// Mark all messages from the other user as read
+$stmt = $pdo->prepare("
+    UPDATE messages
+    SET is_read = 1
+    WHERE sender_id = ?
+      AND receiver_id = ?
+      AND is_read = 0
+");
+
+$stmt->execute([
+    $other_user_id,
+    $current_user_id
+]);
+
 $stmt = $pdo->prepare("
     SELECT m.*, u.username
     FROM messages m
