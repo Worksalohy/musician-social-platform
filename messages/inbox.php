@@ -72,9 +72,17 @@ body {
 
 <div class="container">
 
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+
     <h2>Messages</h2>
 
-    <div id="conversation-list"></div>
+    <a href="new-chat.php">
+        <button type="button">+ New Chat</button>
+    </a>
+
+</div>
+
+<div id="conversation-list"></div>
 
 </div>
 

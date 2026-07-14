@@ -44,6 +44,11 @@ $stmt->execute([
 
 $messages = $stmt->fetchAll();
 
+if (empty($messages)) {
+    echo "<p>No messages yet. Start the conversation!</p>";
+    exit;
+}
+
 foreach ($messages as $message):
 ?>
 

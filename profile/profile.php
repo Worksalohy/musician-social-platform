@@ -143,6 +143,10 @@ if (!empty($user['avatar'])) {
         <?= $isFollowing ? "Unfollow" : "Follow" ?>
     </button>
 
+    <a href="../messages/chat.php?user_id=<?= $user['id'] ?>">
+        <button type="button">Message</button>
+    </a>
+
 <?php endif; ?>
 
 <script>
