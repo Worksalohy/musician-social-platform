@@ -1,15 +1,9 @@
 <?php
-require_once "../middleware/auth.php";
 require_once "../config/db.php";
-?>
+require_once "../middleware/auth.php";
 
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
-    <title>Dashboard | Music Culture</title>
-</head>
-<body>
+include "../includes/header.php";
+?>
 
 <h1>
     Welcome,
@@ -100,6 +94,5 @@ $unreadCount = $stmt->fetchColumn();
 
     });
     </script>
-</body>
-</html>
+<?php include "../includes/footer.php"; ?>
 

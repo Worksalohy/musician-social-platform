@@ -1,20 +1,22 @@
 <?php
 
-require_once "../middleware/auth.php";
 require_once "../config/db.php";
+require_once "../middleware/auth.php";
+require_once "../includes/header.php";
 
+// Mark notifications as read
 $stmt = $pdo->prepare("
     UPDATE notifications
     SET is_read = 1
     WHERE user_id = ?
-    AND is_read = 0
+      AND is_read = 0
 ");
 
 $stmt->execute([$_SESSION['user_id']]);
 
-
 $user_id = $_SESSION['user_id'];
 
+// Get notifications
 $sql = "
     SELECT
         notifications.*,
@@ -31,75 +33,103 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$user_id]);
 
 $notifications = $stmt->fetchAll();
+
 ?>
 
+<style>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notification | Music Culture</title>
-</head>
+.notifications-container{
+    max-width:700px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+}
 
-<body>
+.notification{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border-bottom:1px solid #ddd;
+}
+
+.notification.unread{
+    background:#f8f9ff;
+}
+
+.notification img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.notification-content{
+    flex:1;
+}
+
+.notification-time{
+    color:#666;
+    font-size:13px;
+}
+
+</style>
+
+<div class="notifications-container">
+
     <h2>Notifications</h2>
 
-<?php if (empty($notifications)): ?>
+    <?php if (empty($notifications)): ?>
 
-    <p>No notifications yet.</p>
+        <p>No notifications yet.</p>
 
-<?php else: ?>
+    <?php else: ?>
 
-    <?php foreach ($notifications as $notification): ?>
+        <?php foreach ($notifications as $notification): ?>
 
-        <?php
-            $avatar = !empty($notification['avatar'])
-            ? "../" . $notification['avatar']
-            : "../assets/musicculture-default-avatar.png";
-        ?>
+            <?php
+                $avatar = !empty($notification['avatar'])
+                    ? "../" . $notification['avatar']
+                    : "../assets/musicculture-default-avatar.png";
+            ?>
 
-        <div class="<?= $notification['is_read'] ? 'notification' : 'notification unread' ?>">
+            <div class="<?= $notification['is_read'] ? 'notification' : 'notification unread' ?>">
 
-            <?php if ($avatar): ?>
                 <img
                     src="<?= htmlspecialchars($avatar) ?>"
-                    alt="Avatar"
-                    width="40"
-                    height="40"
-                >
-            <?php endif; ?>
+                    alt="Avatar">
 
-            <strong>
-                <?= htmlspecialchars($notification['username']) ?>
-            </strong>
+                <div class="notification-content">
 
-            <?php if ($notification['type'] === 'like'): ?>
+                    <strong>
+                        <?= htmlspecialchars($notification['username']) ?>
+                    </strong>
 
-                liked your post.
+                    <?php if ($notification['type'] === 'like'): ?>
 
-            <?php elseif ($notification['type'] === 'comment'): ?>
+                        liked your post.
 
-                commented on your post.
+                    <?php elseif ($notification['type'] === 'comment'): ?>
 
-            <?php endif; ?>
+                        commented on your post.
 
-            <br>
+                    <?php endif; ?>
 
-            <small>
-                <?= $notification['created_at'] ?>
-            </small>
+                    <br>
 
-        </div>
+                    <span class="notification-time">
+                        <?= htmlspecialchars($notification['created_at']) ?>
+                    </span>
 
-        <hr>
+                </div>
 
-    <?php endforeach; ?>
+            </div>
 
-<?php endif; ?>
+        <?php endforeach; ?>
 
-<strong>
-    <a href="../dashboard/dashboard.php">Dashboard</a>
-</strong>
-</body>
-</html>
+    <?php endif; ?>
+
+</div>
+
+<?php require_once "../includes/footer.php"; ?>
