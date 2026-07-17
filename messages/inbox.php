@@ -1,23 +1,12 @@
 <?php
-session_start();
 
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
+require_once "../includes/header.php";
+
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Messages</title>
-
 <style>
-
-body {
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    padding:40px;
-}
 
 .container{
     max-width:700px;
@@ -66,23 +55,20 @@ body {
 }
 
 </style>
-</head>
-
-<body>
 
 <div class="container">
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
 
-    <h2>Messages</h2>
+        <h2>Messages</h2>
 
-    <a href="new-chat.php">
-        <button type="button">+ New Chat</button>
-    </a>
+        <a href="new-chat.php">
+            <button type="button">+ New Chat</button>
+        </a>
 
-</div>
+    </div>
 
-<div id="conversation-list"></div>
+    <div id="conversation-list"></div>
 
 </div>
 
@@ -96,6 +82,7 @@ function loadConversations() {
             document.getElementById("conversation-list").innerHTML = html;
         })
         .catch(error => console.error(error));
+
 }
 
 // Load immediately
@@ -106,5 +93,4 @@ setInterval(loadConversations, 3000);
 
 </script>
 
-</body>
-</html>
+<?php require_once "../includes/footer.php"; ?>
