@@ -9,6 +9,27 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$user_id]);
 
 $user = $stmt->fetch();
+
+// Fetch all available musical styles
+$stmt = $pdo->query("
+    SELECT id, name
+    FROM music_styles
+    ORDER BY name
+");
+
+$allStyles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch the user's selected styles
+$stmt = $pdo->prepare("
+    SELECT style_id
+    FROM user_music_styles
+    WHERE user_id = ?
+");
+
+$stmt->execute([$user_id]);
+
+$userStyles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
 ?>
 
 <?php if (!empty($_SESSION['success'])): ?>
@@ -57,6 +78,31 @@ $user = $stmt->fetch();
     <input type="email" name="email"
            value="<?php echo htmlspecialchars($user['email']); ?>">
     <br><br>
+
+    <label>Musical Styles:</label><br><br>
+
+    <?php foreach ($allStyles as $style): ?>
+
+        <label>
+
+            <input
+                type="checkbox"
+                name="music_styles[]"
+                value="<?= $style['id']; ?>"
+
+                <?= in_array($style['id'], $userStyles) ? 'checked' : ''; ?>
+
+            >
+
+            <?= htmlspecialchars($style['name']); ?>
+
+        </label>
+
+        <br>
+
+    <?php endforeach; ?>
+
+    <br>
 
     <button type="submit">Update Profile</button>
 

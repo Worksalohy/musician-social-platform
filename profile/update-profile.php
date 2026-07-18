@@ -7,6 +7,7 @@ $user_id = $_SESSION['user_id'];
 
 $username = trim($_POST['username']);
 $email = trim($_POST['email']);
+$musicStyles = $_POST['music_styles'] ?? [];
 
 $errors = [];
 
@@ -62,6 +63,27 @@ $sql = "UPDATE users
 $stmt = $pdo->prepare($sql);
 
 $stmt->execute([$username, $email, $user_id]);
+
+// Remove existing musical styles
+$stmt = $pdo->prepare("
+    DELETE FROM user_music_styles
+    WHERE user_id = ?
+");
+
+$stmt->execute([$user_id]);
+
+// Insert newly selected musical styles
+if (!empty($musicStyles)) {
+
+    $stmt = $pdo->prepare("
+        INSERT INTO user_music_styles (user_id, style_id)
+        VALUES (?, ?)
+    ");
+
+    foreach ($musicStyles as $styleId) {
+        $stmt->execute([$user_id, $styleId]);
+    }
+}
 
 $_SESSION['success'] = "Profile updated successfully.";
 
