@@ -23,6 +23,20 @@ if (!$user) {
     die("User not found.");
 }
 
+// Fetch user's musical styles
+$stmt = $pdo->prepare("
+    SELECT ms.name
+    FROM user_music_styles ums
+    INNER JOIN music_styles ms
+        ON ums.style_id = ms.id
+    WHERE ums.user_id = ?
+    ORDER BY ms.name
+");
+
+$stmt->execute([$profile_user_id]);
+
+$musicStyles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
 // Check if current user follows this profile
 $isFollowing = false;
 
@@ -102,6 +116,21 @@ if (!empty($user['avatar'])) {
     margin-top:20px;
 }
 
+.music-styles{
+    margin:10px 0;
+}
+
+.style-badge{
+    display:inline-block;
+    padding:6px 12px;
+    margin:4px 4px 0 0;
+    background:#4CAF50;
+    color:white;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:500;
+}
+
 </style>
 
 <div class="profile-card">
@@ -131,6 +160,28 @@ if (!empty($user['avatar'])) {
         <strong>Instrument:</strong>
         <?= htmlspecialchars($user["instrument"]) ?>
     </p>
+
+    <div class="music-styles">
+
+        <strong>Musical Styles:</strong><br><br>
+
+        <?php if (!empty($musicStyles)): ?>
+
+            <?php foreach ($musicStyles as $style): ?>
+
+                <span class="style-badge">
+                    🎵 <?= htmlspecialchars($style) ?>
+                </span>
+
+            <?php endforeach; ?>
+
+        <?php else: ?>
+
+            <em>No musical styles selected.</em>
+
+        <?php endif; ?>
+
+    </div>
 
     <p>
         <strong>Member since:</strong>
