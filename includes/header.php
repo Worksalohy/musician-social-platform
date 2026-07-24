@@ -134,6 +134,11 @@ body{
             Notifications
         </a>
 
+        <a href="/quiz/index.php">
+            Music Quiz
+        </a>
+
+
         <form
             class="search-form"
             action="/search/search.php"
