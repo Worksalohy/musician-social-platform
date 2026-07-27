@@ -53,6 +53,39 @@ $stmt->execute([
     $percentage
 ]);
 
+// Get the user's highest percentage
+$stmt = $pdo->prepare("
+    SELECT MAX(percentage)
+    FROM quiz_results
+    WHERE user_id = ?
+");
+
+$stmt->execute([$_SESSION['user_id']]);
+
+$bestPercentage = $stmt->fetchColumn();
+
+if ($bestPercentage < 40) {
+    $musicLevel = "Beginner";
+} elseif ($bestPercentage < 70) {
+    $musicLevel = "Intermediate";
+} elseif ($bestPercentage < 90) {
+    $musicLevel = "Advanced";
+} else {
+    $musicLevel = "Expert";
+}
+
+// Update the user's music level
+$stmt = $pdo->prepare("
+    UPDATE users
+    SET music_level = ?
+    WHERE id = ?
+");
+
+$stmt->execute([
+    $musicLevel,
+    $_SESSION['user_id']
+]);
+
 // Redirect to results page
 header("Location: result.php");
 exit;

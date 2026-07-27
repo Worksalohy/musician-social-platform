@@ -60,18 +60,15 @@ if ($bestResult) {
     $bestPercentage = 0;
 }
 
-// Determine music level
-if ($attempts == 0) {
-    $musicLevel = "Not Ranked";
-} elseif ($bestPercentage < 40) {
-    $musicLevel = "Beginner";
-} elseif ($bestPercentage < 70) {
-    $musicLevel = "Intermediate";
-} elseif ($bestPercentage < 90) {
-    $musicLevel = "Advanced";
-} else {
-    $musicLevel = "Expert";
-}
+// Get the user's music level
+$stmt = $pdo->prepare("
+    SELECT music_level
+    FROM users
+    WHERE id = ?
+");
+
+$stmt->execute([$_SESSION['user_id']]);
+$musicLevel = $stmt->fetchColumn();
 ?>
 
 <div class="quiz-stats">
