@@ -32,6 +32,27 @@ while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
 $_SESSION['quiz_score'] = $score;
 $_SESSION['quiz_total'] = $total;
 
+$userId = $_SESSION['user_id'];
+
+$percentage = 0;
+
+if ($total > 0) {
+    $percentage = ($score / $total) * 100;
+}
+
+$stmt = $pdo->prepare("
+    INSERT INTO quiz_results
+    (user_id, score, total_questions, percentage)
+    VALUES (?, ?, ?, ?)
+");
+
+$stmt->execute([
+    $userId,
+    $score,
+    $total,
+    $percentage
+]);
+
 // Redirect to results page
 header("Location: result.php");
 exit;
