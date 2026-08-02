@@ -67,7 +67,6 @@ body{
 }
 
 #search-results{
-
     position:absolute;
     top:45px;
     left:0;
@@ -77,33 +76,26 @@ body{
     border-radius:5px;
     box-shadow:0 2px 8px rgba(0,0,0,.2);
     z-index:1000;
-
 }
 
 .search-item{
-
     display:flex;
     align-items:center;
     gap:10px;
     padding:10px;
     text-decoration:none;
     color:black;
-
 }
 
 .search-item:hover{
-
     background:#f2f2f2;
-
 }
 
 .search-item img{
-
     width:35px;
     height:35px;
     border-radius:50%;
     object-fit:cover;
-
 }
 
 </style>
@@ -122,22 +114,13 @@ body{
 
         <a href="/dashboard/dashboard.php">Home</a>
 
-        <a href="/profile/profile.php">
-            Profile
-        </a>
+        <a href="/profile/profile.php">Profile</a>
 
-        <a href="/messages/inbox.php">
-            Messages
-        </a>
+        <a href="/messages/inbox.php">Messages</a>
 
-        <a href="/notifications/notifications.php">
-            Notifications
-        </a>
+        <a href="/notifications/notifications.php">Notifications</a>
 
-        <a href="/quiz/index.php">
-            Music Quiz
-        </a>
-
+        <a href="/quiz/index.php">Music Quiz</a>
 
         <form
             class="search-form"
@@ -152,12 +135,9 @@ body{
                     name="q"
                     placeholder="Search musicians..."
                     autocomplete="off"
-                    value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+                    value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
 
-                <button type="submit">
-                    Search
-                </button>
-
+                <button type="submit">Search</button>
 
                 <div id="search-results"></div>
 
@@ -165,9 +145,7 @@ body{
 
         </form>
 
-        <a href="/logout.php">
-            Logout
-        </a>
+        <a href="/logout.php">Logout</a>
 
     </div>
 
