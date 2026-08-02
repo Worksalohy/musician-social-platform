@@ -2,16 +2,30 @@
 session_start();
 
 require_once "../middleware/auth.php";
-require_once "../includes/header.php";
 
-if (!isset($_SESSION['quiz_score'])) {
+if (
+    !isset($_SESSION['quiz_score']) ||
+    !isset($_SESSION['quiz_total'])
+) {
     header("Location: index.php");
     exit;
 }
 
-$score = $_SESSION['quiz_score'];
-$total = $_SESSION['quiz_total'];
-$percentage = ($score / $total) * 100;
+require_once "../includes/header.php";
+$total = (int) $_SESSION['quiz_total'];
+
+$percentage = $total > 0 ? ($score / $total) * 100 : 0;
+
+// Determine music level
+if ($percentage >= 90) {
+    $level = "🎼 Music Master";
+} elseif ($percentage >= 75) {
+    $level = "🎵 Advanced Musician";
+} elseif ($percentage >= 50) {
+    $level = "🎶 Intermediate Musician";
+} else {
+    $level = "🎧 Beginner";
+}
 
 // Clear session values
 unset($_SESSION['quiz_score']);
@@ -39,6 +53,13 @@ unset($_SESSION['quiz_total']);
     font-size:42px;
     color:#28a745;
     margin:20px 0;
+}
+
+.level{
+    font-size:24px;
+    margin:20px 0;
+    color:#333;
+    font-weight:bold;
 }
 
 .play-again{
@@ -70,6 +91,10 @@ unset($_SESSION['quiz_total']);
 <p>
 You scored <strong><?= number_format($percentage, 1) ?>%</strong>.
 </p>
+
+<div class="level">
+Your Level: <?= htmlspecialchars($level) ?>
+</div>
 
 <a class="play-again" href="index.php">
 Play Again

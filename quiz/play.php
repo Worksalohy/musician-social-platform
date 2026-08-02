@@ -5,8 +5,28 @@ require_once "../middleware/auth.php";
 require_once "../config/db.php";
 require_once "../includes/header.php";
 
-// Fetch all questions in random order
-$stmt = $pdo->query("SELECT * FROM quiz_questions ORDER BY RAND()");
+// Current quiz level
+// Get the user's current quiz level
+$stmt = $pdo->prepare("
+    SELECT quiz_level
+    FROM users
+    WHERE id = ?
+");
+
+$stmt->execute([$_SESSION['user_id']]);
+
+$level = $stmt->fetchColumn();
+
+// Fetch only questions for the current level
+$stmt = $pdo->prepare("
+    SELECT *
+    FROM quiz_questions
+    WHERE level = ?
+    ORDER BY RAND()
+    LIMIT 20
+");
+
+$stmt->execute([$level]);
 $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 

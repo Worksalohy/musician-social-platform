@@ -9,12 +9,36 @@ if (!isset($_POST['answers'])) {
     exit;
 }
 
+$userId = $_SESSION['user_id'];
 $answers = $_POST['answers'];
-$score = 0;
-$total = count($answers);
 
-// Get correct answers
-$stmt = $pdo->query("SELECT id, correct_option FROM quiz_questions");
+// Get the user's current quiz level
+$stmt = $pdo->prepare("
+    SELECT quiz_level
+    FROM users
+    WHERE id = ?
+");
+$stmt->execute([$userId]);
+$level = $stmt->fetchColumn();
+
+// Count the total number of questions for this level
+$stmt = $pdo->prepare("
+    SELECT COUNT(*)
+    FROM quiz_questions
+    WHERE level = ?
+");
+$stmt->execute([$level]);
+$total = $stmt->fetchColumn();
+
+$score = 0;
+
+// Get the correct answers for this level
+$stmt = $pdo->prepare("
+    SELECT id, correct_option
+    FROM quiz_questions
+    WHERE level = ?
+");
+$stmt->execute([$level]);
 
 while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
@@ -28,42 +52,48 @@ while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
 }
 
+// Calculate percentage
+$percentage = 0;
+
+if ($total > 0) {
+    $percentage = round(($score / $total) * 100, 2);
+}
+
 // Save score in session
 $_SESSION['quiz_score'] = $score;
 $_SESSION['quiz_total'] = $total;
 
-$userId = $_SESSION['user_id'];
-
-$percentage = 0;
-
-if ($total > 0) {
-    $percentage = ($score / $total) * 100;
-}
-
+// Save the result
 $stmt = $pdo->prepare("
     INSERT INTO quiz_results
-    (user_id, score, total_questions, percentage)
-    VALUES (?, ?, ?, ?)
+    (user_id, level, score, total_questions, percentage)
+    VALUES (?, ?, ?, ?, ?)
 ");
 
 $stmt->execute([
     $userId,
+    $level,
     $score,
     $total,
     $percentage
 ]);
 
-// Get the user's highest percentage
+// Get the user's best percentage
 $stmt = $pdo->prepare("
     SELECT MAX(percentage)
     FROM quiz_results
     WHERE user_id = ?
 ");
 
-$stmt->execute([$_SESSION['user_id']]);
+$stmt->execute([$userId]);
 
 $bestPercentage = $stmt->fetchColumn();
 
+if ($bestPercentage === null) {
+    $bestPercentage = 0;
+}
+
+// Determine the user's music level
 if ($bestPercentage < 40) {
     $musicLevel = "Beginner";
 } elseif ($bestPercentage < 70) {
@@ -83,9 +113,9 @@ $stmt = $pdo->prepare("
 
 $stmt->execute([
     $musicLevel,
-    $_SESSION['user_id']
+    $userId
 ]);
 
-// Redirect to results page
+// Redirect to the result page
 header("Location: result.php");
 exit;
