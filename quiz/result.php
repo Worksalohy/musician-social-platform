@@ -11,7 +11,7 @@ if (
     exit;
 }
 
-require_once "../includes/header.php";
+$score = (int) $_SESSION['quiz_score'];
 $total = (int) $_SESSION['quiz_total'];
 
 $percentage = $total > 0 ? ($score / $total) * 100 : 0;
@@ -26,6 +26,8 @@ if ($percentage >= 90) {
 } else {
     $level = "🎧 Beginner";
 }
+
+require_once "../includes/header.php";
 
 // Clear session values
 unset($_SESSION['quiz_score']);
@@ -95,6 +97,10 @@ You scored <strong><?= number_format($percentage, 1) ?>%</strong>.
 <div class="level">
 Your Level: <?= htmlspecialchars($level) ?>
 </div>
+
+<a href="leaderboard.php" class="leaderboard-btn">
+    🏆 View Leaderboard
+</a>
 
 <a class="play-again" href="index.php">
 Play Again

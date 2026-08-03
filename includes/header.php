@@ -98,6 +98,24 @@ body{
     object-fit:cover;
 }
 
+.leaderboard-btn{
+
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 25px;
+    background:#222;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+
+}
+
+.leaderboard-btn:hover{
+
+    background:#444;
+
+}
+
 </style>
 
 </head>
@@ -146,6 +164,8 @@ body{
         </form>
 
         <a href="/logout.php">Logout</a>
+
+        <a href="/quiz/leaderboard.php">Leaderboard</a>
 
     </div>
 
