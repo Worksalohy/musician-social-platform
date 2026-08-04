@@ -26,6 +26,7 @@ document.querySelectorAll(".like-form").forEach(form => {
 
 
         const data = await response.json();
+        console.log(data);
 
 
 
@@ -33,10 +34,11 @@ document.querySelectorAll(".like-form").forEach(form => {
             this.querySelector(".like-button");
 
 
-        const likeCount =
-            this.closest(".post-card")
-                .querySelector(".like-count");
+        const postCard = this.closest(".post-card");
 
+        const likeCount = postCard
+            ? postCard.querySelector(".like-count")
+            : null;
 
 
         if(button){
@@ -61,8 +63,6 @@ document.querySelectorAll(".like-form").forEach(form => {
 
 
 });
-
-
 
 
 

@@ -175,36 +175,6 @@ $musicLevel = $stmt->fetchColumn();
 <?php require_once "feed.php"; ?>
 
 <!-- JavaScript -->
-<script>
-document.querySelectorAll('.like-form').forEach(form => {
 
-    form.addEventListener('submit', async function(e) {
-
-        e.preventDefault();
-
-        const formData = new FormData(this);
-
-        const response = await fetch(
-            '../posts/toggle_like.php',
-            {
-                method: 'POST',
-                body: formData
-            }
-        );
-
-        const data = await response.json();
-
-        const button = this.querySelector('.like-button');
-
-        const likeCount = this.parentElement.querySelector('.like-count');
-
-        button.textContent = data.liked ? 'Unlike' : 'Like';
-
-        likeCount.textContent = data.count + ' likes';
-
-    });
-
-});
-</script>
 
 <?php include "../includes/footer.php"; ?>
