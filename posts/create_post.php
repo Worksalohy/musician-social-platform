@@ -4,19 +4,28 @@ session_start();
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: ../dashboard/dashboard.php");
+    exit;
+}
 
-    $content = trim($_POST["content"]);
-    $user_id = $_SESSION["user_id"];
+$content = trim($_POST["content"] ?? "");
+$user_id = $_SESSION["user_id"];
 
-    // Prevent empty posts
-    if (empty($content)) {
-        die("Post cannot be empty.");
-    }
+if ($content === "") {
+    die("Post cannot be empty.");
+}
 
-    $sql = "INSERT INTO posts (user_id, content)
-            VALUES (:user_id, :content)";
+if (strlen($content) > 1000) {
+    die("Post cannot exceed 1000 characters.");
+}
 
+$sql = "
+    INSERT INTO posts (user_id, content)
+    VALUES (:user_id, :content)
+";
+
+try {
     $stmt = $pdo->prepare($sql);
 
     $stmt->execute([
@@ -26,5 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     header("Location: ../dashboard/dashboard.php");
     exit;
+
+} catch (PDOException $e) {
+    die("Unable to create post.");
 }
-?>
