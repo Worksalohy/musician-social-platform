@@ -35,40 +35,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <?php
 
-if (isset($_SESSION['user_id'])) {
-
-    require_once __DIR__ . "/../config/db.php";
-
-
-    // Unread messages count
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*)
-        FROM messages
-        WHERE receiver_id = ?
-        AND is_read = 0
-    ");
-
-    $stmt->execute([$_SESSION['user_id']]);
-
-    $unreadMessages = $stmt->fetchColumn();
-
-
-
-    // Unread notifications count
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*)
-        FROM notifications
-        WHERE user_id = ?
-        AND is_read = 0
-    ");
-
-    $stmt->execute([$_SESSION['user_id']]);
-
-    $unreadNotifications = $stmt->fetchColumn();
-
-}
-
-require_once __DIR__ . "/navbar.php";
+require_once __DIR__ . '/navbar-data.php';
+require_once __DIR__ . '/navbar.php';
 
 ?>
 
