@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+$pageTitle = "Music Quiz | MusicCulture";
+$currentPage = "quiz";
+
 require_once "../middleware/auth.php";
 require_once "../includes/header.php";
 ?>

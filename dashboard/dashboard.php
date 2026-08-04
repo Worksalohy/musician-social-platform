@@ -1,16 +1,31 @@
 <?php
+$pageTitle = "Dashboard | MusicCulture";
+$currentPage = "dashboard";
+
+$pageStyles = [
+    "/assets/css/dashboard.css",
+    "/assets/css/feed.css"
+];
+
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
 
 include "../includes/header.php";
 ?>
 
-<h1>
-    Welcome,
-    <?php echo htmlspecialchars($_SESSION["username"]) . " 🎶"; ?>
-</h1>
+<div class="dashboard-header">
 
-<p>You are logged in.</p>
+    <h1>
+        👋 Welcome back,
+        <?= htmlspecialchars($_SESSION["username"]); ?>
+    </h1>
+
+    <p>
+        Connect with musicians, share your passion,
+        and improve your music knowledge.
+    </p>
+
+</div>
 
 <?php
 // Get unread notifications
@@ -71,65 +86,62 @@ $stmt->execute([$_SESSION['user_id']]);
 $musicLevel = $stmt->fetchColumn();
 ?>
 
-<div class="quiz-stats">
+<div class="stats-grid">
 
-    <h2>🎵 Music Quiz</h2>
+    <div class="stat-card">
+
+        <h3>🎵 Music Level</h3>
+
+        <p><?= htmlspecialchars($musicLevel); ?></p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>🏆 Best Score</h3>
+
+        <p><?= $bestScore ?> / <?= $totalQuestions ?></p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>📈 Highest Score</h3>
+
+        <p><?= number_format($bestPercentage,1) ?>%</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>🎮 Attempts</h3>
+
+        <p><?= $attempts ?></p>
+
+    </div>
+
+</div>
+
+<div class="quiz-banner">
+
+    <h2>🎮 Ready for another challenge?</h2>
 
     <p>
-        <strong>Best Score:</strong>
-        <?= $bestScore; ?> / <?= $totalQuestions; ?>
+
+        Play the Music Quiz again to improve your score
+        and earn a higher Music Level.
+
     </p>
 
-    <p>
-        <strong>Highest Percentage:</strong>
-        <?= number_format($bestPercentage, 2); ?>%
-    </p>
+    <a class="btn" href="/quiz/index.php">
 
-    <p>
-        <strong>Attempts:</strong>
-        <?= $attempts; ?>
-    </p>
-
-    <p>
-        <strong>Music Level:</strong>
-        <?= $musicLevel; ?>
-    </p>
-
-    <a class="quiz-btn" href="/quiz/index.php">
         Play Quiz
+
     </a>
 
 </div>
 
-<style>
 
-.quiz-stats{
-    background:#fff;
-    padding:20px;
-    margin:25px 0;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
-}
-
-.quiz-stats h2{
-    margin-top:0;
-}
-
-.quiz-btn{
-    display:inline-block;
-    margin-top:15px;
-    padding:10px 20px;
-    background:#28a745;
-    color:#fff;
-    text-decoration:none;
-    border-radius:5px;
-}
-
-.quiz-btn:hover{
-    background:#218838;
-}
-
-</style>
 
 <a href="../notifications/notifications.php">
     Notifications

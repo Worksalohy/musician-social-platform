@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+$pageTitle = "Leaderboard | MusicCulture";
+$currentPage = "leaderboard";
+
 require_once "../middleware/auth.php";
 require_once "../config/db.php";
 require_once "../includes/header.php";

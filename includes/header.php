@@ -1,174 +1,75 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>MusicCulture</title>
 
-<style>
+    <meta charset="UTF-8">
 
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f4f4f4;
-}
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-.navbar{
-    background:#222;
-    color:#fff;
-    padding:15px 30px;
+    <title><?= $pageTitle ?? "MusicCulture"; ?></title>
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-}
+    <link rel="stylesheet" href="/assets/css/main.css">
 
-.logo{
-    font-size:24px;
-    font-weight:bold;
-}
-
-.nav-links{
-    display:flex;
-    align-items:center;
-    gap:20px;
-}
-
-.nav-links a{
-    color:#fff;
-    text-decoration:none;
-}
-
-.nav-links a:hover{
-    text-decoration:underline;
-}
-
-.search-form{
-    display:flex;
-    gap:8px;
-}
-
-.search-form input{
-    padding:8px;
-    width:220px;
-}
-
-.search-form button{
-    padding:8px 14px;
-    cursor:pointer;
-}
-
-.container{
-    padding:30px;
-}
-
-.search-wrapper{
-    position:relative;
-}
-
-#search-results{
-    position:absolute;
-    top:45px;
-    left:0;
-    width:250px;
-    background:white;
-    color:black;
-    border-radius:5px;
-    box-shadow:0 2px 8px rgba(0,0,0,.2);
-    z-index:1000;
-}
-
-.search-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:10px;
-    text-decoration:none;
-    color:black;
-}
-
-.search-item:hover{
-    background:#f2f2f2;
-}
-
-.search-item img{
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.leaderboard-btn{
-
-    display:inline-block;
-    margin-top:20px;
-    padding:12px 25px;
-    background:#222;
-    color:white;
-    text-decoration:none;
-    border-radius:5px;
-
-}
-
-.leaderboard-btn:hover{
-
-    background:#444;
-
-}
-
-</style>
+    <?php
+    if (!empty($pageStyles)) {
+        foreach ($pageStyles as $style) {
+            echo '<link rel="stylesheet" href="' .
+                htmlspecialchars($style) .
+                '">' . PHP_EOL;
+        }
+    }
+    ?>
 
 </head>
 
 <body>
 
-<div class="navbar">
+<?php
 
-    <div class="logo">
-        MusicCulture
-    </div>
+if (isset($_SESSION['user_id'])) {
 
-    <div class="nav-links">
+    require_once __DIR__ . "/../config/db.php";
 
-        <a href="/dashboard/dashboard.php">Home</a>
 
-        <a href="/profile/profile.php">Profile</a>
+    // Unread messages count
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM messages
+        WHERE receiver_id = ?
+        AND is_read = 0
+    ");
 
-        <a href="/messages/inbox.php">Messages</a>
+    $stmt->execute([$_SESSION['user_id']]);
 
-        <a href="/notifications/notifications.php">Notifications</a>
+    $unreadMessages = $stmt->fetchColumn();
 
-        <a href="/quiz/index.php">Music Quiz</a>
 
-        <form
-            class="search-form"
-            action="/search/search.php"
-            method="GET">
 
-            <div class="search-wrapper">
+    // Unread notifications count
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM notifications
+        WHERE user_id = ?
+        AND is_read = 0
+    ");
 
-                <input
-                    id="global-search"
-                    type="text"
-                    name="q"
-                    placeholder="Search musicians..."
-                    autocomplete="off"
-                    value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+    $stmt->execute([$_SESSION['user_id']]);
 
-                <button type="submit">Search</button>
+    $unreadNotifications = $stmt->fetchColumn();
 
-                <div id="search-results"></div>
+}
 
-            </div>
+require_once __DIR__ . "/navbar.php";
 
-        </form>
-
-        <a href="/logout.php">Logout</a>
-
-        <a href="/quiz/leaderboard.php">Leaderboard</a>
-
-    </div>
-
-</div>
+?>
 
 <div class="container">

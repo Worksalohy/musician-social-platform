@@ -1,4 +1,6 @@
 <?php
+$pageTitle = "Messages | MusicCulture";
+$currentPage = "messages";
 
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
