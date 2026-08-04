@@ -26,7 +26,6 @@ document.querySelectorAll(".like-form").forEach(form => {
 
 
         const data = await response.json();
-        console.log(data);
 
 
 
