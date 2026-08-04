@@ -1,71 +1,105 @@
 <?php
+session_start();
 
-require_once "../middleware/auth.php";
 require_once "../config/db.php";
+require_once "../middleware/auth.php";
 
-$userId = $_SESSION['user_id'];
+$user_id = $_SESSION["user_id"];
 
-if (!isset($_GET['id'])) {
+if (!isset($_GET["id"])) {
     die("Post ID missing.");
 }
 
-$postId = $_GET['id'];
+$post_id = (int) $_GET["id"];
 
-// Fetch post
-$stmt = $pdo->prepare("
-    SELECT * FROM posts WHERE id = ?
-");
+try {
 
-$stmt->execute([$postId]);
+    // Fetch post
+    $stmt = $pdo->prepare("
+        SELECT id, content, user_id
+        FROM posts
+        WHERE id = :id
+    ");
 
-$post = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute([
+        "id" => $post_id
+    ]);
 
-if (!$post) {
-    die("Post not found.");
-}
+    $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Security check
-if ($post['user_id'] != $userId) {
-    die("Unauthorized action.");
-}
 
-// Update post
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!$post) {
+        die("Post not found.");
+    }
 
-    $content = trim($_POST['content']);
 
-    if (!empty($content)) {
+    // Check ownership
+    if ($post["user_id"] != $user_id) {
+        die("Unauthorized action.");
+    }
 
-        $stmt = $pdo->prepare("
+
+    // Update post
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+        $content = trim($_POST["content"] ?? "");
+
+
+        if ($content === "") {
+            die("Post cannot be empty.");
+        }
+
+
+        if (strlen($content) > 1000) {
+            die("Post cannot exceed 1000 characters.");
+        }
+
+
+        $update = $pdo->prepare("
             UPDATE posts
-            SET content = ?
-            WHERE id = ?
+            SET content = :content
+            WHERE id = :post_id
+            AND user_id = :user_id
         ");
 
-        $stmt->execute([$content, $postId]);
+
+        $update->execute([
+            "content" => $content,
+            "post_id" => $post_id,
+            "user_id" => $user_id
+        ]);
+
 
         header("Location: ../dashboard/dashboard.php");
         exit;
     }
+
+
+} catch (PDOException $e) {
+
+    die("Unable to edit post.");
+
 }
+
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Post</title>
-</head>
-<body>
+
+<?php require_once "../includes/header.php"; ?>
+
+
+<div class="container">
 
     <h1>Edit Post</h1>
+
 
     <form method="POST">
 
         <textarea
             name="content"
+            rows="5"
             required
-        ><?= htmlspecialchars($post['content']) ?></textarea>
+        ><?= htmlspecialchars($post["content"]) ?></textarea>
+
 
         <button type="submit">
             Update Post
@@ -73,5 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </form>
 
-</body>
-</html>
+</div>
+
+
+<?php require_once "../includes/footer.php"; ?>
