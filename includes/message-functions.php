@@ -38,3 +38,36 @@ function markConversationAsRead(
         $receiverId
     ]);
 }
+
+/**
+ * Get all messages between two users.
+ */
+function getConversationMessages(
+    PDO $pdo,
+    int $userId,
+    int $otherUserId
+): array {
+
+    $stmt = $pdo->prepare("
+        SELECT 
+            m.*,
+            u.username
+        FROM messages m
+        JOIN users u 
+            ON m.sender_id = u.id
+        WHERE
+            (m.sender_id = ? AND m.receiver_id = ?)
+            OR
+            (m.sender_id = ? AND m.receiver_id = ?)
+        ORDER BY m.created_at ASC
+    ");
+
+    $stmt->execute([
+        $userId,
+        $otherUserId,
+        $otherUserId,
+        $userId
+    ]);
+
+    return $stmt->fetchAll();
+}
