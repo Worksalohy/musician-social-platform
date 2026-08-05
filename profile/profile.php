@@ -11,6 +11,7 @@ $pageScripts = [
 
 $currentPage = "profile";
 
+require_once "../includes/user-functions.php";
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
 require_once "../includes/header.php";
@@ -24,14 +25,10 @@ $isOwnProfile = ($profile_user_id === (int) $_SESSION['user_id']);
 $isOwnProfile = ($profile_user_id == $_SESSION['user_id']);
 
 // Fetch user information
-$sql = "SELECT id, username, email, instrument, created_at, avatar
-        FROM users
-        WHERE id = :id";
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute(["id" => $profile_user_id]);
-
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = getUserById(
+    $pdo,
+    $profile_user_id
+);
 
 // If user not found
 if (!$user) {
@@ -39,38 +36,22 @@ if (!$user) {
 }
 
 // Fetch user's musical styles
-$stmt = $pdo->prepare("
-    SELECT ms.name
-    FROM user_music_styles ums
-    INNER JOIN music_styles ms
-        ON ums.style_id = ms.id
-    WHERE ums.user_id = ?
-    ORDER BY ms.name
-");
-
-$stmt->execute([$profile_user_id]);
-
-$musicStyles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$musicStyles = getUserMusicStyles(
+    $pdo,
+    $profile_user_id
+);
 
 // Check if current user follows this profile
-$stmt = $pdo->prepare("
-    SELECT 1
-    FROM follows
-    WHERE follower_id = ?
-      AND following_id = ?
-");
-
-$stmt->execute([
+$isFollowing = isFollowing(
+    $pdo,
     $_SESSION['user_id'],
     $profile_user_id
-]);
-
-$isFollowing = (bool) $stmt->fetchColumn();
+);
 
 // Avatar
-$avatar = !empty($user['avatar'])
-    ? "../" . $user['avatar']
-    : "../assets/musicculture-default-avatar.png";
+$avatar = getAvatarPath(
+    $user['avatar']
+);
 ?>
 
 <div class="profile-card">
