@@ -37,24 +37,18 @@ if (empty($messages)) {
 
     echo "<p>No messages yet. Start the conversation!</p>";
 
-    exit;
-}
+} else {
 
-
-foreach ($messages as $message):
-
+    foreach ($messages as $message):
 ?>
 
 <div class="message">
 
     <strong>
-
         <?= $message['sender_id'] == $current_user_id
             ? "You"
             : htmlspecialchars($message['username']) ?>
-
     </strong>
-
 
     <p>
         <?= nl2br(
@@ -62,11 +56,13 @@ foreach ($messages as $message):
         ) ?>
     </p>
 
-
     <small>
         <?= htmlspecialchars($message['created_at']) ?>
     </small>
 
 </div>
 
-<?php endforeach; ?>
+<?php
+    endforeach;
+
+}
