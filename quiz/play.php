@@ -8,7 +8,7 @@ require_once "../includes/header.php";
 // Current quiz level
 // Get the user's current quiz level
 $stmt = $pdo->prepare("
-    SELECT quiz_level
+    SELECT skill_level
     FROM users
     WHERE id = ?
 ");
