@@ -95,13 +95,13 @@ if ($bestPercentage === null) {
 
 // Determine the user's music level
 if ($bestPercentage < 40) {
-    $musicLevel = "Beginner";
+    $skill_level = "Beginner";
 } elseif ($bestPercentage < 70) {
-    $musicLevel = "Intermediate";
+    $skill_level = "Intermediate";
 } elseif ($bestPercentage < 90) {
-    $musicLevel = "Advanced";
+    $skill_level = "Advanced";
 } else {
-    $musicLevel = "Expert";
+    $skill_level = "Expert";
 }
 
 // Update the user's music level
@@ -112,7 +112,7 @@ $stmt = $pdo->prepare("
 ");
 
 $stmt->execute([
-    $musicLevel,
+    $skill_level,
     $userId
 ]);
 
