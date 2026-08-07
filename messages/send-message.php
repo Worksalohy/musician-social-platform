@@ -3,34 +3,30 @@ session_start();
 
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
-
-$sender_id = $_SESSION['user_id'];
-
-$receiver_id = $_POST['receiver_id'] ?? null;
-$message = trim($_POST['message'] ?? '');
-
-if (!$receiver_id || empty($message)) {
-    die("Invalid data.");
-}
-
-$stmt = $pdo->prepare("
-    INSERT INTO messages (
-        sender_id,
-        receiver_id,
-        message
-    )
-    VALUES (?, ?, ?)
-");
-
-$stmt->execute([
-    $sender_id,
-    $receiver_id,
-    $message
-]);
+require_once "../includes/message-functions.php";
 
 header('Content-Type: application/json');
 
+$senderId = (int) $_SESSION['user_id'];
+$receiverId = (int) ($_POST['receiver_id'] ?? 0);
+$message = trim($_POST['message'] ?? '');
+
+if ($receiverId <= 0 || $message === '') {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Invalid data.'
+    ]);
+    exit;
+}
+
+$success = sendMessage(
+    $pdo,
+    $senderId,
+    $receiverId,
+    $message
+);
+
 echo json_encode([
-    'success' => true
+    'success' => $success
 ]);
 exit;

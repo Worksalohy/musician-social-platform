@@ -71,3 +71,32 @@ function getConversationMessages(
 
     return $stmt->fetchAll();
 }
+
+function sendMessage(
+    PDO $pdo,
+    int $senderId,
+    int $receiverId,
+    string $message
+): bool
+{
+    $message = trim($message);
+
+    if ($receiverId <= 0 || $message === '') {
+        return false;
+    }
+
+    $stmt = $pdo->prepare("
+        INSERT INTO messages (
+            sender_id,
+            receiver_id,
+            message
+        )
+        VALUES (?, ?, ?)
+    ");
+
+    return $stmt->execute([
+        $senderId,
+        $receiverId,
+        $message
+    ]);
+}

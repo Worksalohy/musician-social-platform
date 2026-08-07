@@ -26,6 +26,10 @@ $other_user_id = isset($_GET['user_id'])
     ? (int) $_GET['user_id']
     : 0;
 
+if ($other_user_id <= 0 || $other_user_id === $current_user_id) {
+    die("Invalid conversation.");
+}
+
 if ($other_user_id <= 0) {
     die("User not found.");
 }
