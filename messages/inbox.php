@@ -1,5 +1,15 @@
 <?php
+
 $pageTitle = "Messages | MusicCulture";
+
+$pageStyles = [
+    "/assets/css/inbox.css"
+];
+
+$pageScripts = [
+    "/assets/js/inbox.js"
+];
+
 $currentPage = "messages";
 
 require_once "../config/db.php";
@@ -8,91 +18,26 @@ require_once "../includes/header.php";
 
 ?>
 
-<style>
-
-.container{
-    max-width:700px;
-    margin:auto;
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-}
-
-.conversation{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:15px;
-    border-bottom:1px solid #ddd;
-    text-decoration:none;
-    color:#000;
-}
-
-.conversation:hover{
-    background:#f8f8f8;
-}
-
-.avatar{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.username{
-    font-weight:bold;
-}
-
-.unread-badge{
-    background:red;
-    color:white;
-    border-radius:50%;
-    min-width:24px;
-    height:24px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:12px;
-    margin-left:auto;
-}
-
-</style>
-
 <div class="container">
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div class="inbox-header">
 
         <h2>Messages</h2>
 
-        <a href="new-chat.php">
-            <button type="button">+ New Chat</button>
+        <a href="new-chat.php" class="new-chat-btn">
+            + New Chat
         </a>
 
     </div>
+
 
     <div id="conversation-list"></div>
 
 </div>
 
-<script>
 
-function loadConversations() {
+<?php
 
-    fetch("fetch-conversations.php")
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("conversation-list").innerHTML = html;
-        })
-        .catch(error => console.error(error));
+require_once "../includes/footer.php";
 
-}
-
-// Load immediately
-loadConversations();
-
-// Refresh every 3 seconds
-setInterval(loadConversations, 3000);
-
-</script>
-
-<?php require_once "../includes/footer.php"; ?>
+?>
