@@ -1,49 +1,20 @@
 <?php
+
 session_start();
 
 require_once "../config/db.php";
 require_once "../middleware/auth.php";
+require_once "../includes/message-functions.php";
+
 
 $user_id = $_SESSION['user_id'];
 
-// Get all users that have chatted with the logged-in user
-$stmt = $pdo->prepare("
-    SELECT
-        u.id,
-        u.username,
-        u.avatar,
 
-        (
-            SELECT COUNT(*)
-            FROM messages
-            WHERE sender_id = u.id
-              AND receiver_id = ?
-              AND is_read = 0
-        ) AS unread_count
-
-    FROM users u
-
-    JOIN messages m
-        ON (
-            (m.sender_id = u.id AND m.receiver_id = ?)
-            OR
-            (m.receiver_id = u.id AND m.sender_id = ?)
-        )
-
-    GROUP BY u.id, u.username, u.avatar
-
-    ORDER BY
-        unread_count DESC,
-        u.username ASC
-");
-
-$stmt->execute([
-    $user_id,
-    $user_id,
+$conversations = getUserConversations(
+    $pdo,
     $user_id
-]);
+);
 
-$conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($conversations)) {
     echo "<p>No conversations yet.</p>";

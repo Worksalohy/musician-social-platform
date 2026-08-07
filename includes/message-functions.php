@@ -100,3 +100,55 @@ function sendMessage(
         $message
     ]);
 }
+
+/**
+ * Get all users that have conversations with a user.
+ */
+function getUserConversations(
+    PDO $pdo,
+    int $userId
+): array {
+
+    $stmt = $pdo->prepare("
+        SELECT
+            u.id,
+            u.username,
+            u.avatar,
+
+            (
+                SELECT COUNT(*)
+                FROM messages
+                WHERE sender_id = u.id
+                  AND receiver_id = ?
+                  AND is_read = 0
+            ) AS unread_count
+
+        FROM users u
+
+        JOIN messages m
+            ON (
+                (m.sender_id = u.id AND m.receiver_id = ?)
+                OR
+                (m.receiver_id = u.id AND m.sender_id = ?)
+            )
+
+        GROUP BY
+            u.id,
+            u.username,
+            u.avatar
+
+        ORDER BY
+            unread_count DESC,
+            u.username ASC
+    ");
+
+
+    $stmt->execute([
+        $userId,
+        $userId,
+        $userId
+    ]);
+
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
