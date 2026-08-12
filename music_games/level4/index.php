@@ -1,0 +1,154 @@
+<?php
+
+session_start();
+
+require_once "../../middleware/auth.php";
+require_once "../../config/db.php";
+
+
+// ------------------------------------------------------------
+// Get a random Level 4 melody
+// ------------------------------------------------------------
+
+$stmt = $pdo->prepare("
+    SELECT
+        id,
+        audio_file,
+        target_sequence
+    FROM music_games
+    WHERE level = 4
+      AND game_type = 'melody_reproduction'
+    ORDER BY RAND()
+    LIMIT 1
+");
+
+$stmt->execute();
+
+$game = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+if (!$game) {
+    die("No Level 4 melodies available.");
+}
+
+
+// ------------------------------------------------------------
+// Page settings
+// ------------------------------------------------------------
+
+$pageTitle = "Level 4 | Music Training";
+
+$pageStyles = [
+    "/music_games/level4/game.css"
+];
+
+$pageScripts = [
+    "/music_games/level4/game.js"
+];
+
+require_once "../../includes/header.php";
+
+?>
+
+<div class="level4-game">
+    <script>
+    const gameAudio =
+        <?= json_encode($game['audio_file']) ?>;
+
+    const targetSequence =
+        <?= json_encode(
+            preg_split(
+                '/\s+/',
+                trim($game['target_sequence'])
+            )
+        ) ?>;
+</script>
+
+    <h1>🎹 Level 4 — Reproduce the Melody</h1>
+
+    <p class="instruction">
+        Listen to the melody, then reproduce it using the piano.
+    </p>
+
+
+    <div class="melody-controls">
+
+        <button id="play-melody">
+            ▶ Play Melody
+        </button>
+
+        <button id="clear-sequence">
+            ↺ Clear
+        </button>
+
+    </div>
+
+
+    <div class="sequence-display">
+
+        <p>
+            Your melody:
+        </p>
+
+        <div id="user-sequence">
+            —
+        </div>
+
+    </div>
+
+
+    <div class="piano">
+
+        <button class="key white-key" data-note="1">
+            <span>C</span>
+            <small>1</small>
+        </button>
+
+        <button class="key white-key" data-note="2">
+            <span>D</span>
+            <small>2</small>
+        </button>
+
+        <button class="key white-key" data-note="3">
+            <span>E</span>
+            <small>3</small>
+        </button>
+
+        <button class="key white-key" data-note="4">
+            <span>F</span>
+            <small>4</small>
+        </button>
+
+        <button class="key white-key" data-note="5">
+            <span>G</span>
+            <small>5</small>
+        </button>
+
+        <button class="key white-key" data-note="6">
+            <span>A</span>
+            <small>6</small>
+        </button>
+
+        <button class="key white-key" data-note="7">
+            <span>B</span>
+            <small>7</small>
+        </button>
+
+    </div>
+
+
+    <div class="submit-area">
+
+        <button id="submit-melody">
+            ✓ Submit Melody
+        </button>
+
+    </div>
+
+</div>
+
+<?php
+
+require_once "../../includes/footer.php";
+
+?>

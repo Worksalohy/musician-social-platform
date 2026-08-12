@@ -1,0 +1,74 @@
+.level4-game {
+    max-width: 900px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.melody-controls {
+    margin: 25px 0;
+}
+
+.melody-controls button,
+.submit-area button {
+    padding: 12px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.sequence-display {
+    margin: 25px 0;
+}
+
+#user-sequence {
+    min-height: 35px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.piano {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto;
+    max-width: 700px;
+}
+
+.white-key {
+    position: relative;
+    width: 90px;
+    height: 240px;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 15px;
+}
+
+.white-key span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.white-key small {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.white-key:hover {
+    background: #f0f0f0;
+}
+
+.white-key.active {
+    transform: translateY(4px);
+    background: #ddd;
+}
+
+.submit-area {
+    margin-top: 30px;
+}
