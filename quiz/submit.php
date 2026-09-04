@@ -1,16 +1,20 @@
 <?php
+
 session_start();
 
 require_once "../middleware/auth.php";
 require_once "../config/db.php";
+
 
 if (!isset($_POST['answers'])) {
     header("Location: index.php");
     exit;
 }
 
-$userId = $_SESSION['user_id'];
+
+$userId = (int) $_SESSION['user_id'];
 $answers = $_POST['answers'];
+
 
 // Get the user's current quiz level
 $stmt = $pdo->prepare("
@@ -18,8 +22,11 @@ $stmt = $pdo->prepare("
     FROM users
     WHERE id = ?
 ");
+
 $stmt->execute([$userId]);
-$level = $stmt->fetchColumn();
+
+$level = (int) $stmt->fetchColumn();
+
 
 // Count the total number of questions for this level
 $stmt = $pdo->prepare("
@@ -27,18 +34,24 @@ $stmt = $pdo->prepare("
     FROM quiz_questions
     WHERE level = ?
 ");
+
 $stmt->execute([$level]);
-$total = $stmt->fetchColumn();
+
+$total = (int) $stmt->fetchColumn();
+
 
 $score = 0;
 
-// Get the correct answers for this level
+
+// Get correct answers for this level
 $stmt = $pdo->prepare("
     SELECT id, correct_option
     FROM quiz_questions
     WHERE level = ?
 ");
+
 $stmt->execute([$level]);
+
 
 while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
@@ -52,21 +65,34 @@ while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
 }
 
+
 // Calculate percentage
 $percentage = 0;
 
 if ($total > 0) {
-    $percentage = round(($score / $total) * 100, 2);
+    $percentage = round(
+        ($score / $total) * 100,
+        2
+    );
 }
+
 
 // Save score in session
 $_SESSION['quiz_score'] = $score;
 $_SESSION['quiz_total'] = $total;
+$_SESSION['quiz_percentage'] = $percentage;
 
-// Save the result
+
+// Save quiz result
 $stmt = $pdo->prepare("
     INSERT INTO quiz_results
-    (user_id, level, score, total_questions, percentage)
+    (
+        user_id,
+        level,
+        score,
+        total_questions,
+        percentage
+    )
     VALUES (?, ?, ?, ?, ?)
 ");
 
@@ -78,44 +104,57 @@ $stmt->execute([
     $percentage
 ]);
 
-// Get the user's best percentage
-$stmt = $pdo->prepare("
-    SELECT MAX(percentage)
-    FROM quiz_results
-    WHERE user_id = ?
-");
 
-$stmt->execute([$userId]);
+// --------------------------------------------------
+// LEVEL PROGRESSION
+// --------------------------------------------------
 
-$bestPercentage = $stmt->fetchColumn();
+$passed = $percentage >= 70;
 
-if ($bestPercentage === null) {
-    $bestPercentage = 0;
+
+// If the user passed the current level,
+// unlock the next level.
+if ($passed) {
+
+    if ($level === 1) {
+
+        // Passed Quiz Level 1
+        $newSkillLevel = 2;
+        $newMusicLevel = "Intermediate";
+
+    } elseif ($level === 2) {
+
+        // Passed Quiz Level 2
+        $newSkillLevel = 3;
+        $newMusicLevel = "Advanced";
+
+    } else {
+
+        // Safety fallback
+        $newSkillLevel = $level;
+        $newMusicLevel = null;
+    }
+
+
+    // Update both progression and displayed music level
+    if ($newMusicLevel !== null) {
+
+        $stmt = $pdo->prepare("
+            UPDATE users
+            SET skill_level = ?,
+                music_level = ?
+            WHERE id = ?
+        ");
+
+        $stmt->execute([
+            $newSkillLevel,
+            $newMusicLevel,
+            $userId
+        ]);
+    }
 }
 
-// Determine the user's music level
-if ($bestPercentage < 40) {
-    $skill_level = "Beginner";
-} elseif ($bestPercentage < 70) {
-    $skill_level = "Intermediate";
-} elseif ($bestPercentage < 90) {
-    $skill_level = "Advanced";
-} else {
-    $skill_level = "Expert";
-}
 
-// Update the user's music level
-$stmt = $pdo->prepare("
-    UPDATE users
-    SET music_level = ?
-    WHERE id = ?
-");
-
-$stmt->execute([
-    $skill_level,
-    $userId
-]);
-
-// Redirect to the result page
+// Redirect to result page
 header("Location: result.php");
 exit;
