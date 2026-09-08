@@ -38,14 +38,24 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <?php if ($user['skill_level'] >= 3): ?>
 
-        <p>
-            Test your musical ear and improve your skills!
-        </p>
+    <p>
+        Test your musical ear and improve your skills!
+    </p>
 
+
+    <?php if ($user['skill_level'] == 3): ?>
 
         <a href="play.php">
-            Start Game
+            Start Level 3
         </a>
+
+    <?php elseif ($user['skill_level'] >= 4): ?>
+
+        <a href="level4/index.php">
+            Start Level 4
+        </a>
+
+    <?php endif; ?>
 
 
     <?php else: ?>

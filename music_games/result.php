@@ -82,13 +82,38 @@ if ((int) $result['level'] === 3) {
         </strong>
     </p>
 
-    <a href="play.php">
-        Play Again
-    </a>
+    <?php if ((int) $result['level'] === 3): ?>
 
-    <a href="index.php">
-        Back to Music Games
-    </a>
+    <?php if ((float) $result['percentage'] >= 70): ?>
+
+        <p>
+            🎉 Congratulations!
+            You have unlocked <strong>Level 4</strong>.
+        </p>
+
+        <a href="level4/index.php">
+            🎹 Start Level 4
+        </a>
+
+    <?php else: ?>
+
+        <p>
+            Level 4 is still locked.
+            You need at least 70% to unlock it.
+        </p>
+
+        <a href="play.php">
+            🔄 Try Level 3 Again
+        </a>
+
+    <?php endif; ?>
+
+<?php endif; ?>
+
+
+<a href="index.php">
+    ← Back to Music Games
+</a>
 
 </div>
 
