@@ -1,12 +1,11 @@
 <?php
+
 session_start();
 
 require_once "../middleware/auth.php";
 require_once "../config/db.php";
-require_once "../includes/header.php";
 
 // Current quiz level
-// Get the user's current quiz level
 $stmt = $pdo->prepare("
     SELECT skill_level
     FROM users
@@ -15,7 +14,19 @@ $stmt = $pdo->prepare("
 
 $stmt->execute([$_SESSION['user_id']]);
 
-$level = $stmt->fetchColumn();
+$level = (int) $stmt->fetchColumn();
+
+
+// Quiz is only available for levels 1 and 2
+if ($level < 1 || $level > 2) {
+    header("Location: ../music_games/index.php");
+    exit;
+}
+
+
+// Header can be loaded now
+require_once "../includes/header.php";
+
 
 // Fetch only questions for the current level
 $stmt = $pdo->prepare("
@@ -27,6 +38,7 @@ $stmt = $pdo->prepare("
 ");
 
 $stmt->execute([$level]);
+
 $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 

@@ -36,10 +36,6 @@ if (empty($answers)) {
 $level = (int) $_SESSION['played_game_level'];
 
 
-// Get the game type
-$gameType = $_SESSION['played_game_type'] ?? null;
-
-
 // Build placeholders
 $placeholders = implode(
     ',',
@@ -60,6 +56,8 @@ $stmt->execute($questionIds);
 $score = 0;
 $total = 0;
 
+$gameTypes = [];
+
 
 while ($game = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
@@ -67,8 +65,9 @@ while ($game = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
     $gameId = $game['id'];
 
-    // Keep the game type from the database
-    $gameType = $game['game_type'];
+    // Remember the game types used
+    $gameTypes[$game['game_type']] = true;
+
 
     // Check user's answer
     if (
@@ -88,6 +87,24 @@ if ($total > 0) {
         ($score / $total) * 100,
         2
     );
+}
+
+
+// Determine game type for the result
+if ($level === 3) {
+
+    // Level 3 contains multiple game types
+    $gameType = 'mixed';
+
+} elseif (count($gameTypes) === 1) {
+
+    // Level 4 or another single-type game
+    $gameType = array_key_first($gameTypes);
+
+} else {
+
+    // Fallback if multiple types are used
+    $gameType = 'mixed';
 }
 
 
@@ -120,13 +137,13 @@ if ($level === 3 && $percentage >= 70) {
 
     $stmt = $pdo->prepare("
         UPDATE users
-        SET skill_level = 4
+        SET skill_level = 4,
+            music_level = 'Expert'
         WHERE id = ?
     ");
 
     $stmt->execute([$userId]);
 }
-
 
 // Store result temporarily in session
 $_SESSION['game_score'] = $score;

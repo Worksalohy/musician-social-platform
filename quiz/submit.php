@@ -28,40 +28,40 @@ $stmt->execute([$userId]);
 $level = (int) $stmt->fetchColumn();
 
 
-// Count the total number of questions for this level
-$stmt = $pdo->prepare("
-    SELECT COUNT(*)
-    FROM quiz_questions
-    WHERE level = ?
-");
-
-$stmt->execute([$level]);
-
-$total = (int) $stmt->fetchColumn();
-
+// Total number of questions actually answered
+$total = count($answers);
 
 $score = 0;
 
 
-// Get correct answers for this level
-$stmt = $pdo->prepare("
-    SELECT id, correct_option
-    FROM quiz_questions
-    WHERE level = ?
-");
+// Get correct answers only for submitted questions
+$questionIds = array_map('intval', array_keys($answers));
 
-$stmt->execute([$level]);
+if ($total > 0) {
 
+    $placeholders = implode(',', array_fill(0, $total, '?'));
 
-while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $stmt = $pdo->prepare("
+        SELECT id, correct_option
+        FROM quiz_questions
+        WHERE level = ?
+        AND id IN ($placeholders)
+    ");
 
-    $questionId = $question['id'];
+    $params = array_merge([$level], $questionIds);
 
-    if (
-        isset($answers[$questionId]) &&
-        $answers[$questionId] === $question['correct_option']
-    ) {
-        $score++;
+    $stmt->execute($params);
+
+    while ($question = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+        $questionId = $question['id'];
+
+        if (
+            isset($answers[$questionId]) &&
+            $answers[$questionId] === $question['correct_option']
+        ) {
+            $score++;
+        }
     }
 }
 
