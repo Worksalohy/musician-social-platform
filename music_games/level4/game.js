@@ -186,14 +186,17 @@ document.addEventListener("keydown", event => {
 // ============================================================
 
 document
-    .getElementById("clear-sequence")
+    .getElementById("play-melody")
     .addEventListener("click", () => {
 
-        userSequence = [];
+        // Stop current playback
+        targetAudio.pause();
 
-        updateSequenceDisplay();
+        // Restart from the beginning
+        targetAudio.currentTime = 0;
+
+        targetAudio.play();
     });
-
     // ============================================================
 // TARGET MELODY
 // ============================================================
@@ -240,38 +243,50 @@ document
         }
 
 
-        let correctNotes = 0;
+        // Create a form dynamically
+        const form = document.createElement("form");
 
-        const totalNotes = targetSequence.length;
-
-
-        // Compare each position
-        for (
-            let i = 0;
-            i < Math.min(
-                userSequence.length,
-                totalNotes
-            );
-            i++
-        ) {
-
-            if (
-                userSequence[i] === targetSequence[i]
-            ) {
-
-                correctNotes++;
-            }
-        }
+        form.method = "POST";
+        form.action = "submit.php";
 
 
-        const percentage =
-            Math.round(
-                (correctNotes / totalNotes) * 100
-            );
+        // ----------------------------------------------------
+        // User sequence
+        // ----------------------------------------------------
+
+        userSequence.forEach(note => {
+
+            const input = document.createElement("input");
+
+            input.type = "hidden";
+            input.name = "user_sequence[]";
+            input.value = note;
+
+            form.appendChild(input);
+        });
 
 
-        alert(
-            `Score: ${correctNotes} / ${totalNotes}\n` +
-            `Accuracy: ${percentage}%`
-        );
+        // ----------------------------------------------------
+        // Target sequence
+        // ----------------------------------------------------
+
+        targetSequence.forEach(note => {
+
+            const input = document.createElement("input");
+
+            input.type = "hidden";
+            input.name = "target_sequence[]";
+            input.value = note;
+
+            form.appendChild(input);
+        });
+
+
+        // ----------------------------------------------------
+        // Submit
+        // ----------------------------------------------------
+
+        document.body.appendChild(form);
+
+        form.submit();
     });
