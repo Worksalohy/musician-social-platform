@@ -7,29 +7,63 @@ require_once "../../config/db.php";
 
 
 // ------------------------------------------------------------
-// Get a random Level 4 melody
+// Start a new Level 4 game if none is active
 // ------------------------------------------------------------
 
-$stmt = $pdo->prepare("
-    SELECT
-        id,
-        audio_file,
-        target_sequence
-    FROM music_games
-    WHERE level = 4
-      AND game_type = 'melody_reproduction'
-    ORDER BY RAND()
-    LIMIT 1
-");
+if (
+    !isset($_SESSION['level4_games']) ||
+    !isset($_SESSION['level4_current']) ||
+    !isset($_SESSION['level4_score'])
+) {
 
-$stmt->execute();
+    $stmt = $pdo->prepare("
+        SELECT
+            id,
+            audio_file
+        FROM music_games
+        WHERE level = 4
+          AND game_type = 'melody_reproduction'
+        ORDER BY RAND()
+        LIMIT 10
+    ");
 
-$game = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute();
+
+    $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-if (!$game) {
-    die("No Level 4 melodies available.");
+    if (count($games) < 10) {
+        die("Not enough Level 4 melodies available.");
+    }
+
+
+    $_SESSION['level4_games'] = $games;
+    $_SESSION['level4_current'] = 0;
+    $_SESSION['level4_score'] = 0;
+
+} else {
+
+    // Continue the existing game
+    $games = $_SESSION['level4_games'];
 }
+
+
+// ------------------------------------------------------------
+// Get current melody
+// ------------------------------------------------------------
+
+$currentIndex = (int) $_SESSION['level4_current'];
+
+
+// Make sure the current melody exists
+
+if (!isset($games[$currentIndex])) {
+    header("Location: index.php");
+    exit;
+}
+
+
+$currentGame = $games[$currentIndex];
 
 
 // ------------------------------------------------------------
@@ -51,24 +85,27 @@ require_once "../../includes/header.php";
 ?>
 
 <div class="level4-game">
-    <script>
-    const gameAudio =
-        <?= json_encode($game['audio_file']) ?>;
 
-    const targetSequence =
-        <?= json_encode(
-            preg_split(
-                '/\s+/',
-                trim($game['target_sequence'])
-            )
-        ) ?>;
-</script>
+    <script>
+        const gameAudio =
+            <?= json_encode($currentGame['audio_file']) ?>;
+    </script>
+
 
     <h1>🎹 Level 4 — Reproduce the Melody</h1>
 
     <p class="instruction">
         Listen to the melody, then reproduce it using the piano.
     </p>
+
+
+    <div class="melody-progress">
+
+        <strong>
+            Melody <?= $currentIndex + 1; ?> / 10
+        </strong>
+
+    </div>
 
 
     <div class="melody-controls">
@@ -146,6 +183,7 @@ require_once "../../includes/header.php";
     </div>
 
 </div>
+
 
 <?php
 

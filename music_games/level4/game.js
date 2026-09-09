@@ -1,5 +1,6 @@
 const pianoKeys = document.querySelectorAll(".key");
-const userSequenceDisplay = document.getElementById("user-sequence");
+const userSequenceDisplay =
+    document.getElementById("user-sequence");
 
 
 // ============================================================
@@ -40,8 +41,11 @@ let userSequence = [];
 
 function playNote(note) {
 
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gainNode =
+        audioContext.createGain();
 
     oscillator.type = "sine";
 
@@ -144,8 +148,7 @@ pianoKeys.forEach(key => {
 
     key.addEventListener("click", () => {
 
-        const note =
-            key.dataset.note;
+        const note = key.dataset.note;
 
         pressKey(note);
     });
@@ -182,24 +185,23 @@ document.addEventListener("keydown", event => {
 
 
 // ============================================================
-// CLEAR
+// CLEAR SEQUENCE
 // ============================================================
 
 document
-    .getElementById("play-melody")
+    .getElementById("clear-sequence")
     .addEventListener("click", () => {
 
-        // Stop current playback
-        targetAudio.pause();
+        userSequence = [];
 
-        // Restart from the beginning
-        targetAudio.currentTime = 0;
-
-        targetAudio.play();
+        updateSequenceDisplay();
     });
-    // ============================================================
-// TARGET MELODY
+
+
 // ============================================================
+// TARGET MELODY AUDIO
+// ============================================================
+
 const targetAudio = new Audio(
     "/music_games/assets/audio/" + gameAudio
 );
@@ -213,18 +215,12 @@ document
     .getElementById("play-melody")
     .addEventListener("click", () => {
 
-        // Restart from the beginning
+        targetAudio.pause();
+
         targetAudio.currentTime = 0;
 
         targetAudio.play();
     });
-
-
-    // ============================================================
-// TARGET SEQUENCE
-// ============================================================
-
-
 
 
 // ============================================================
@@ -237,14 +233,17 @@ document
 
         if (userSequence.length === 0) {
 
-            alert("Please play the melody first.");
+            alert(
+                "Please play the melody first."
+            );
 
             return;
         }
 
 
-        // Create a form dynamically
-        const form = document.createElement("form");
+        // Create form
+        const form =
+            document.createElement("form");
 
         form.method = "POST";
         form.action = "submit.php";
@@ -256,26 +255,11 @@ document
 
         userSequence.forEach(note => {
 
-            const input = document.createElement("input");
+            const input =
+                document.createElement("input");
 
             input.type = "hidden";
             input.name = "user_sequence[]";
-            input.value = note;
-
-            form.appendChild(input);
-        });
-
-
-        // ----------------------------------------------------
-        // Target sequence
-        // ----------------------------------------------------
-
-        targetSequence.forEach(note => {
-
-            const input = document.createElement("input");
-
-            input.type = "hidden";
-            input.name = "target_sequence[]";
             input.value = note;
 
             form.appendChild(input);
