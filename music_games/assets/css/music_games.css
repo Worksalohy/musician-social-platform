@@ -22,4 +22,10 @@
     border-color: #ccc;
     opacity: 0.7; }
 
+.training-level.current {
+  border-width: 2px;
+  transform: scale(1.01); }
+  .training-level.current p {
+    font-size: 1.05rem; }
+
 /*# sourceMappingURL=music_games.css.map */

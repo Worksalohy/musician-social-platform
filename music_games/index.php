@@ -134,7 +134,7 @@ foreach ($quizResults as $result) {
 
         
         <!-- Level 3 -->
-<div class="training-level <?= $user['skill_level'] >= 3 ? 'completed' : 'locked'; ?>">
+<div class="training-level <?= $user['skill_level'] == 3 ? 'current' : ($user['skill_level'] > 3 ? 'completed' : 'locked'); ?>">
 
     <?php if ($user['skill_level'] >= 3): ?>
 
@@ -162,7 +162,7 @@ foreach ($quizResults as $result) {
         
 
         <!-- Level 4 -->
-<div class="training-level <?= $user['skill_level'] >= 4 ? 'completed' : 'locked'; ?>">
+<div class="training-level <?= $user['skill_level'] == 4 ? 'current' : ($user['skill_level'] > 4 ? 'completed' : 'locked'); ?>">
 
     <?php if ($user['skill_level'] >= 4): ?>
 
