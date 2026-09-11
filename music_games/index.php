@@ -57,6 +57,25 @@ foreach ($quizResults as $result) {
     $quizByLevel[$result['level']] = $result;
 }
 
+// Get the latest Level 4 result
+$stmt = $pdo->prepare("
+    SELECT percentage
+    FROM game_results
+    WHERE user_id = ?
+      AND level = 4
+      AND game_type = 'melody_reproduction'
+    ORDER BY id DESC
+    LIMIT 1
+");
+
+$stmt->execute([$userId]);
+
+$level4Score = $stmt->fetchColumn();
+
+$level5Unlocked = (
+    $level4Score !== false &&
+    $level4Score >= 80
+);
 
 ?>
 
@@ -182,6 +201,33 @@ foreach ($quizResults as $result) {
 
         <small>
             Complete Level 3 first
+        </small>
+
+    <?php endif; ?>
+
+</div>
+
+<!-- Level 5 -->
+<div class="training-level <?= $level5Unlocked ? 'current' : 'locked'; ?>">
+
+    <?php if ($level5Unlocked): ?>
+
+        <p>
+            ✓ Level 5 — Musician Challenge
+        </p>
+
+        <small>
+            Random musical challenges
+        </small>
+
+    <?php else: ?>
+
+        <p>
+            🔒 Level 5 — Musician Challenge
+        </p>
+
+        <small>
+            Achieve at least 80% in Level 4
         </small>
 
     <?php endif; ?>
