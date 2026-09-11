@@ -51,6 +51,7 @@ $currentGameId = (int) $games[$currentIndex]['id'];
 // ------------------------------------------------------------
 
 $userSequence = $_POST['user_sequence'] ?? [];
+$userSequence = array_map('intval', $userSequence);
 
 
 // Make sure the submitted sequence is an array
@@ -90,6 +91,7 @@ $targetSequence = preg_split(
     '/\s+/',
     trim($targetSequence)
 );
+$targetSequence = array_map('intval', $targetSequence);
 
 
 // ------------------------------------------------------------
