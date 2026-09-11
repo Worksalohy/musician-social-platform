@@ -180,32 +180,28 @@ $level5Unlocked = (
 </div>
         
 
-        <!-- Level 4 -->
+<!-- Level 4 -->
 <div class="training-level <?= $user['skill_level'] == 4 ? 'current' : ($user['skill_level'] > 4 ? 'completed' : 'locked'); ?>">
 
-    <?php if ($user['skill_level'] >= 4): ?>
+    <?php if ($user['skill_level'] > 4): ?>
 
-        <p>
-            ✓ Level 4 — Melody Reproduction
-        </p>
+        <p>✓ Level 4 — Melody Reproduction</p>
+        <small>Completed</small>
 
-        <small>
-            Test your melody skills
-        </small>
+    <?php elseif ($user['skill_level'] == 4): ?>
+
+        <p>🎵 Level 4 — Melody Reproduction</p>
+        <small>Test your melody skills</small>
 
     <?php else: ?>
 
-        <p>
-            🔒 Level 4 — Melody Reproduction
-        </p>
-
-        <small>
-            Complete Level 3 first
-        </small>
+        <p>🔒 Level 4 — Melody Reproduction</p>
+        <small>Complete Level 3 first</small>
 
     <?php endif; ?>
 
 </div>
+
 
 <!-- Level 5 -->
 <div class="training-level <?= $level5Unlocked ? 'current' : 'locked'; ?>">
