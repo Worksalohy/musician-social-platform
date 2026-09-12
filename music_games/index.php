@@ -72,7 +72,7 @@ $stmt->execute([$userId]);
 
 $level4Score = $stmt->fetchColumn();
 
-$level5Unlocked = (
+$musicTrainingUnlocked = (
     $level4Score !== false &&
     $level4Score >= 80
 );
@@ -203,27 +203,27 @@ $level5Unlocked = (
 </div>
 
 
-<!-- Level 5 -->
-<div class="training-level <?= $level5Unlocked ? 'current' : 'locked'; ?>">
+<!-- Music Training -->
+<div class="training-level <?= $musicTrainingUnlocked ? 'current' : 'locked'; ?>">
 
-    <?php if ($level5Unlocked): ?>
+    <?php if ($musicTrainingUnlocked): ?>
 
         <p>
-            ✓ Level 5 — Musician Challenge
+            ✓ Music Training
         </p>
 
         <small>
-            Random musical challenges
+            Practice and develop your musical skills
         </small>
 
     <?php else: ?>
 
         <p>
-            🔒 Level 5 — Musician Challenge
+            🔒 Music Training
         </p>
 
         <small>
-            Achieve at least 80% in Level 4
+            Achieve at least 80% in Level 4 to unlock
         </small>
 
     <?php endif; ?>
@@ -235,24 +235,30 @@ $level5Unlocked = (
 
     <?php if ($user['skill_level'] >= 3): ?>
 
-        <p>
-            Test your musical ear and improve your skills!
-        </p>
+    <p>
+        Test your musical ear and improve your skills!
+    </p>
 
 
-        <?php if ($user['skill_level'] == 3): ?>
+    <?php if ($user['skill_level'] == 3): ?>
 
-            <a href="play.php">
-                Start Level 3
-            </a>
+        <a href="play.php">
+            Start Level 3
+        </a>
 
-        <?php elseif ($user['skill_level'] >= 4): ?>
+    <?php elseif ($user['skill_level'] == 4 && !$musicTrainingUnlocked): ?>
 
-            <a href="level4/index.php">
-                Start Level 4
-            </a>
+        <a href="level4/index.php">
+            Start Level 4
+        </a>
 
-        <?php endif; ?>
+    <?php elseif ($musicTrainingUnlocked): ?>
+
+        <a href="training/index.php">
+            Start Music Training
+        </a>
+
+    <?php endif; ?>
 
 
     <?php else: ?>
