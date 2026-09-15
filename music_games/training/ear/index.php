@@ -132,6 +132,6 @@ $pageTitle = "Ear Training";
 
 </main>
 
-<?php require_once "../../../includes/footer.php"; ?>
-
 <script src="game.js"></script>
+
+<?php require_once "../../../includes/footer.php"; ?>
