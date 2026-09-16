@@ -1,5 +1,6 @@
 const playButton = document.getElementById("play-button");
 const answerButtons = document.querySelectorAll(".interval-answer");
+const answerFeedback = document.getElementById("answer-feedback");
 
 
 // ------------------------------------------------------------
@@ -126,9 +127,11 @@ answerButtons.forEach((button) => {
         const correctInterval = Number(playButton.dataset.semitones);
 
         if (selectedInterval === correctInterval) {
-            alert("Correct!");
+            answerFeedback.textContent = "Correct!";
+            answerFeedback.className = "answer-feedback correct";
         } else {
-            alert("Incorrect!");
+            answerFeedback.textContent = "Incorrect!";
+            answerFeedback.className = "answer-feedback incorrect";
         }
     });
 

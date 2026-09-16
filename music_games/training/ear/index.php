@@ -47,6 +47,11 @@ $challenge = generateChallenge(
 
 $pageTitle = "Ear Training";
 
+$pageStyles = [
+    "/music_games/assets/css/music_games.css",
+    "game.css"
+];
+
 ?>
 
 <?php require_once "../../../includes/header.php"; ?>
@@ -129,6 +134,8 @@ $pageTitle = "Ear Training";
         </button>
 
     </div>
+
+    <div id="answer-feedback" class="answer-feedback" aria-live="polite"></div>
 
 </main>
 

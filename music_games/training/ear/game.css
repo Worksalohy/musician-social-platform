@@ -1,0 +1,14 @@
+.answer-feedback {
+    margin-top: 1.5rem;
+    min-height: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.answer-feedback.correct {
+    color: #22c55e;
+}
+
+.answer-feedback.incorrect {
+    color: #dc2626;
+}
