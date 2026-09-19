@@ -1,3 +1,19 @@
+.ear-training {
+    position: relative;
+    height: 2.75rem;
+}
+
+#play-button {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#next-button {
+    position: absolute;
+    left: calc(50% + 4.5rem);
+}
+
 .answer-feedback {
     margin-top: 1.5rem;
     min-height: 1.5rem;
@@ -11,4 +27,34 @@
 
 .answer-feedback.incorrect {
     color: #dc2626;
+}
+
+.answer-feedback.retry-correct {
+    color: #f59e0b;
+}
+
+.interval-results {
+    margin: 1.5rem auto;
+    max-width: 400px;
+}
+
+.interval-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+}
+
+.interval-name {
+    font-weight: 600;
+}
+
+.accuracy-good {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+.accuracy-needs-practice {
+    color: #f59e0b;
+    font-weight: 700;
 }

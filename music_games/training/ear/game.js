@@ -1,6 +1,8 @@
 const playButton = document.getElementById("play-button");
 const answerButtons = document.querySelectorAll(".interval-answer");
 const answerFeedback = document.getElementById("answer-feedback");
+const selectedIntervalInput = document.getElementById("selected-interval");
+const nextButton = document.getElementById("next-button");
 
 
 // ------------------------------------------------------------
@@ -119,6 +121,9 @@ function playChallenge() {
 playButton.addEventListener("click", playChallenge);
 
 
+let firstAnswer = null;
+
+
 answerButtons.forEach((button) => {
 
     button.addEventListener("click", () => {
@@ -126,13 +131,55 @@ answerButtons.forEach((button) => {
         const selectedInterval = Number(button.dataset.interval);
         const correctInterval = Number(playButton.dataset.semitones);
 
-        if (selectedInterval === correctInterval) {
-            answerFeedback.textContent = "Correct!";
-            answerFeedback.className = "answer-feedback correct";
-        } else {
-            answerFeedback.textContent = "Incorrect!";
-            answerFeedback.className = "answer-feedback incorrect";
+
+        // ----------------------------------------------------
+        // First answer
+        // ----------------------------------------------------
+
+        if (firstAnswer === null) {
+
+            firstAnswer = selectedInterval;
+
+            selectedIntervalInput.value = firstAnswer;
+
+            if (firstAnswer === correctInterval) {
+
+                answerFeedback.textContent = "Correct!";
+                answerFeedback.className =
+                    "answer-feedback correct";
+
+            } else {
+
+                answerFeedback.textContent = "Incorrect!";
+                answerFeedback.className =
+                    "answer-feedback incorrect";
+            }
+
+            nextButton.hidden = false;
+
+            return;
         }
+
+
+        // ----------------------------------------------------
+        // Later answer
+        // ----------------------------------------------------
+
+        if (selectedInterval === correctInterval) {
+
+            answerFeedback.textContent =
+                "Correct, but your first answer is already counted.";
+
+            answerFeedback.className =
+                "answer-feedback retry-correct";
+
+        } else {
+
+            answerFeedback.textContent = "Incorrect!";
+            answerFeedback.className =
+                "answer-feedback incorrect";
+        }
+
     });
 
 });

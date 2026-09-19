@@ -35,15 +35,36 @@ if ($level4Score === false || $level4Score < 80) {
 
 
 // ------------------------------------------------------------
-// Generate Ear Training challenge
+// Initialize Ear Training session
 // ------------------------------------------------------------
 
-$challenge = generateChallenge(
-    'diatonic',
-    'C',
-    'intermediate',
-    4
-);
+if (
+    !isset($_SESSION['ear_training']) ||
+    isset($_GET['restart'])
+) {
+
+    $_SESSION['ear_training'] = [
+        'challenges' => [],
+        'current' => 0,
+        'score' => 0,
+        'answers' => []
+    ];
+
+    for ($i = 0; $i < 10; $i++) {
+
+        $_SESSION['ear_training']['challenges'][] = generateChallenge(
+            'diatonic',
+            'C',
+            'intermediate',
+            4
+        );
+    }
+}
+
+$challenge =
+    $_SESSION['ear_training']['challenges']
+    [$_SESSION['ear_training']['current']];
+
 
 $pageTitle = "Ear Training";
 
@@ -60,6 +81,10 @@ $pageStyles = [
 
     <h1>Ear Training</h1>
 
+    <p class="ear-progress">
+        Question <?= $_SESSION['ear_training']['current'] + 1 ?> / 10
+    </p>
+
     <p>Listen carefully and identify the interval.</p>
 
     <div class="ear-training">
@@ -75,65 +100,79 @@ $pageStyles = [
             ▶ Play
         </button>
 
-    </div>
-
-        <div class="interval-choices">
-
-        <h2>What interval did you hear?</h2>
-
-        <button type="button" class="interval-answer" data-interval="0">
-            Unison
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="1">
-            Minor 2nd
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="2">
-            Major 2nd
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="3">
-            Minor 3rd
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="4">
-            Major 3rd
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="5">
-            Perfect 4th
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="6">
-            Tritone
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="7">
-            Perfect 5th
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="8">
-            Minor 6th
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="9">
-            Major 6th
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="10">
-            Minor 7th
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="11">
-            Major 7th
-        </button>
-
-        <button type="button" class="interval-answer" data-interval="12">
-            Octave
-        </button>
+        <button
+            type="submit"
+            id="next-button"
+            class="next-button"
+            form="ear-answer-form"
+            hidden
+        >
+            <?= $_SESSION['ear_training']['current'] === 9
+                ? 'Finish Training'
+                : 'Next Challenge'
+            ?>
+    </button>
 
     </div>
+
+        <form method="POST" action="submit.php" id="ear-answer-form" class="interval-choices">
+            <h2>What interval did you hear?</h2>
+
+            <input type="hidden" name="selected_interval" id="selected-interval"        >
+
+            <button type="button" class="interval-answer" data-interval="0">
+                Unison
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="1">
+                Minor 2nd
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="2">
+                Major 2nd
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="3">
+                Minor 3rd
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="4">
+                Major 3rd
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="5">
+                Perfect 4th
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="6">
+                Tritone
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="7">
+                Perfect 5th
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="8">
+                Minor 6th
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="9">
+                Major 6th
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="10">
+                Minor 7th
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="11">
+                Major 7th
+            </button>
+
+            <button type="button" class="interval-answer" data-interval="12">
+                Octave
+            </button>
+
+</form>
 
     <div id="answer-feedback" class="answer-feedback" aria-live="polite"></div>
 
