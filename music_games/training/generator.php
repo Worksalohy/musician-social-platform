@@ -138,8 +138,8 @@ function generateSecondNote($firstNote, $mode, $key, $range, $direction, $type)
         $possibleNotes = [];
 
         $availableNotes = ($mode === 'diatonic')
-    ? $majorScales[$key]
-    : $chromaticNotes;
+            ? $majorScales[$key]
+            : $chromaticNotes;
 
         foreach ($availableNotes as $note) {
 
@@ -155,22 +155,9 @@ function generateSecondNote($firstNote, $mode, $key, $range, $direction, $type)
                 );
 
                 // ------------------------------------------------
-                // Respect melodic direction using actual pitch
+                // Harmonic intervals have no melodic direction.
+                // The second note can be above or below the first.
                 // ------------------------------------------------
-
-                if (
-                    $direction === 'ascending' &&
-                    $secondMidi <= $firstMidi
-                ) {
-                    continue;
-                }
-
-                if (
-                    $direction === 'descending' &&
-                    $secondMidi >= $firstMidi
-                ) {
-                    continue;
-                }
 
                 if ($secondMidi === $firstMidi) {
                     continue;
@@ -182,8 +169,7 @@ function generateSecondNote($firstNote, $mode, $key, $range, $direction, $type)
                 );
 
                 if (
-                    in_array($semitones, $range['allowed']) &&
-                    $secondMidi > $firstMidi
+                    in_array($semitones, $range['allowed'])
                 ) {
 
                     $possibleNotes[] = [
@@ -193,10 +179,6 @@ function generateSecondNote($firstNote, $mode, $key, $range, $direction, $type)
                     ];
                 }
             }
-        }
-
-        if (empty($possibleNotes)) {
-            die('No valid harmonic interval found.');
         }
 
         return $possibleNotes[array_rand($possibleNotes)];

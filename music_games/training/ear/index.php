@@ -35,15 +35,76 @@ if ($level4Score === false || $level4Score < 80) {
 
 
 // ------------------------------------------------------------
+// Select Ear Training level
+// ------------------------------------------------------------
+
+$trainingLevel = $_GET['level'] ?? null;
+
+$availableLevels = [
+    'beginner' => 'Beginner',
+    'intermediate' => 'Intermediate',
+    'advanced' => 'Advanced'
+];
+
+
+// ------------------------------------------------------------
+// Show level selection
+// ------------------------------------------------------------
+
+if ($trainingLevel === null || !isset($availableLevels[$trainingLevel])) {
+
+    $pageTitle = "Ear Training";
+
+    $pageStyles = [
+        "/music_games/assets/css/music_games.css",
+        "game.css"
+    ];
+
+    require_once "../../../includes/header.php";
+    ?>
+
+    <main class="training-game">
+
+        <h1>Ear Training</h1>
+
+        <p>Choose your training level.</p>
+
+        <div class="training-levels">
+
+            <?php foreach ($availableLevels as $level => $label): ?>
+
+                <a
+                    href="?level=<?= urlencode($level) ?>"
+                    class="training-level"
+                >
+                    <?= htmlspecialchars($label) ?>
+                </a>
+
+            <?php endforeach; ?>
+
+        </div>
+
+    </main>
+
+    <?php
+
+    require_once "../../../includes/footer.php";
+    exit;
+}
+
+// ------------------------------------------------------------
 // Initialize Ear Training session
 // ------------------------------------------------------------
 
 if (
     !isset($_SESSION['ear_training']) ||
-    isset($_GET['restart'])
+    isset($_GET['restart']) ||
+    $_SESSION['ear_training']['level'] !== $trainingLevel ||
+    $_SESSION['ear_training']['current'] >= 10
 ) {
 
     $_SESSION['ear_training'] = [
+        'level' => $trainingLevel,
         'challenges' => [],
         'current' => 0,
         'score' => 0,
@@ -55,7 +116,7 @@ if (
         $_SESSION['ear_training']['challenges'][] = generateChallenge(
             'diatonic',
             'C',
-            'intermediate',
+            $trainingLevel,
             4
         );
     }

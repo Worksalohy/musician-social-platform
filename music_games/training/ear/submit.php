@@ -77,10 +77,8 @@ if ($_SESSION['ear_training']['current'] >= 10) {
 }
 
 
-// ------------------------------------------------------------
-// Redirect to next question
-// ------------------------------------------------------------
+// Redirect to next question with the selected level
+$level = urlencode($_SESSION['ear_training']['level']);
 
-header("Location: index.php");
-
+header("Location: index.php?level={$level}");
 exit;
