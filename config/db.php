@@ -1,14 +1,19 @@
 <?php
-$host = "mysql";
-$dbname = "musician_social_platform";
-$user = "root";
-$pass = "root";
+
+$host = getenv("DB_HOST");
+$dbname = getenv("DB_NAME");
+$user = getenv("DB_USER");
+$pass = getenv("DB_PASSWORD");
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8",
+        $user,
+        $pass
+    );
+
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
-?>
