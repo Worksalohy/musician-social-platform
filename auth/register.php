@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $username = trim($_POST["username"]);
     $email = trim($_POST["email"]);
-    $passwordRaw = trim($_POST["password"]);
+    $passwordRaw = $_POST["password"];
     $instrument = trim($_POST["instrument"]);
     $error = "";
     $password = "";
