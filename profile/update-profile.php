@@ -54,35 +54,52 @@ if (!empty($errors)) {
     exit;
 }
 
-//Update profile
+// Update profile
 
-$sql = "UPDATE users
-        SET username = ?, email = ?
-        WHERE id = ?";
+try {
 
-$stmt = $pdo->prepare($sql);
+    $pdo->beginTransaction();
 
-$stmt->execute([$username, $email, $user_id]);
+    $sql = "UPDATE users
+            SET username = ?, email = ?
+            WHERE id = ?";
 
-// Remove existing musical styles
-$stmt = $pdo->prepare("
-    DELETE FROM user_music_styles
-    WHERE user_id = ?
-");
+    $stmt = $pdo->prepare($sql);
 
-$stmt->execute([$user_id]);
+    $stmt->execute([$username, $email, $user_id]);
 
-// Insert newly selected musical styles
-if (!empty($musicStyles)) {
-
+    // Remove existing musical styles
     $stmt = $pdo->prepare("
-        INSERT INTO user_music_styles (user_id, style_id)
-        VALUES (?, ?)
+        DELETE FROM user_music_styles
+        WHERE user_id = ?
     ");
 
-    foreach ($musicStyles as $styleId) {
-        $stmt->execute([$user_id, $styleId]);
+    $stmt->execute([$user_id]);
+
+    // Insert newly selected musical styles
+    if (!empty($musicStyles)) {
+
+        $stmt = $pdo->prepare("
+            INSERT INTO user_music_styles (user_id, style_id)
+            VALUES (?, ?)
+        ");
+
+        foreach ($musicStyles as $styleId) {
+            $stmt->execute([$user_id, $styleId]);
+        }
     }
+
+    $pdo->commit();
+
+} catch (PDOException $e) {
+
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
+    $_SESSION['errors'] = ["Unable to update profile."];
+    header("Location: edit-profile.php");
+    exit;
 }
 
 $_SESSION['success'] = "Profile updated successfully.";

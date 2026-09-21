@@ -1,4 +1,5 @@
 const followBtn = document.getElementById("follow-btn");
+const successMessage = document.getElementById("success-message");
 
 if (followBtn) {
     followBtn.addEventListener("click", function () {
@@ -24,4 +25,15 @@ if (followBtn) {
             console.error("Error:", error);
         });
     });
+}
+
+if (successMessage) {
+    setTimeout(() => {
+        successMessage.style.opacity = "0";
+        successMessage.style.transform = "translateY(-5px)";
+
+        setTimeout(() => {
+            successMessage.remove();
+        }, 400);
+    }, 3000);
 }

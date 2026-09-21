@@ -54,6 +54,16 @@ $avatar = getAvatarPath(
 );
 ?>
 
+<?php if (!empty($_SESSION['success'])): ?>
+
+    <p id="success-message" class="success-message">
+        <?= htmlspecialchars($_SESSION['success']) ?>
+    </p>
+
+    <?php unset($_SESSION['success']); ?>
+
+<?php endif; ?>
+
 <div class="profile-card">
 
     <h1>
