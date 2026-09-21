@@ -74,8 +74,6 @@ exit;
     <input type="email" name="email" placeholder="Email"><br>
     <input type="password" name="password" placeholder="Password"><br>
     <input type="text" name="instrument" placeholder="Instrument (piano, sax...)"><br>
-    <input type="text" name="instrument" placeholder="Instrument (piano, sax...)"><br>
-
     <p><strong>Musical Styles</strong></p>
 
     <?php foreach ($musicStyles as $style): ?>
