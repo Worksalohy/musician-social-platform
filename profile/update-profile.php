@@ -9,6 +9,48 @@ $username = trim($_POST['username']);
 $email = trim($_POST['email']);
 $musicStyles = $_POST['music_styles'] ?? [];
 
+if (!is_array($musicStyles)) {
+    $musicStyles = [];
+}
+
+if (!empty($musicStyles)) {
+
+    $validStyleIds = array_filter(
+        $musicStyles,
+        fn($styleId) => filter_var($styleId, FILTER_VALIDATE_INT) !== false
+    );
+
+    if (count($validStyleIds) !== count($musicStyles)) {
+        $_SESSION['errors'] = ["Invalid musical style selection."];
+        header("Location: edit-profile.php");
+        exit;
+    }
+
+    $musicStyles = array_map('intval', $musicStyles);
+    $musicStyles = array_values(array_unique($musicStyles));
+}
+
+if (!empty($musicStyles)) {
+
+    $placeholders = implode(',', array_fill(0, count($musicStyles), '?'));
+
+    $stmt = $pdo->prepare("
+        SELECT id
+        FROM music_styles
+        WHERE id IN ($placeholders)
+    ");
+
+    $stmt->execute($musicStyles);
+
+    $validStyleIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    if (count($validStyleIds) !== count($musicStyles)) {
+        $_SESSION['errors'] = ["Invalid musical style selection."];
+        header("Location: edit-profile.php");
+        exit;
+    }
+}
+
 $errors = [];
 
 
