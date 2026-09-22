@@ -1,0 +1,153 @@
+/* =====================================
+   LEADERBOARD PAGE
+===================================== */
+
+.leaderboard-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.leaderboard-header {
+    margin-bottom: 25px;
+}
+
+.leaderboard-header h1 {
+    margin-bottom: 8px;
+    color: #0f172a;
+}
+
+.leaderboard-header p {
+    color: #475569;
+    margin: 0;
+}
+
+.leaderboard-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08);
+}
+
+.leaderboard-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.leaderboard-table th {
+    padding: 15px;
+    background: #6c63ff;
+    color: #ffffff;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.leaderboard-table th:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.leaderboard-table th:last-child {
+    border-radius: 0 10px 10px 0;
+}
+
+.leaderboard-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.leaderboard-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.leaderboard-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Rank */
+
+.leaderboard-table td:first-child {
+    width: 80px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Avatar */
+
+.leaderboard-table td:nth-child(2) {
+    width: 80px;
+}
+
+.leaderboard-table td:nth-child(2) img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Username */
+
+.leaderboard-table td:nth-child(3) {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* Best score */
+
+.leaderboard-table td:nth-child(4) {
+    font-weight: 600;
+}
+
+/* Percentage */
+
+.leaderboard-table td:nth-child(5) {
+    color: #6c63ff;
+    font-weight: 700;
+}
+
+/* Level */
+
+.leaderboard-table td:nth-child(6) {
+    font-weight: 600;
+}
+
+/* Top three rows */
+
+.leaderboard-table tbody tr:nth-child(1) {
+    background: #faf8ff;
+}
+
+.leaderboard-table tbody tr:nth-child(2) {
+    background: #f8fafc;
+}
+
+.leaderboard-table tbody tr:nth-child(3) {
+    background: #fffaf5;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+
+    .leaderboard-card {
+        padding: 15px;
+    }
+
+    .leaderboard-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 12px;
+    }
+
+}

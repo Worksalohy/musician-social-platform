@@ -3,6 +3,9 @@ session_start();
 
 $pageTitle = "Leaderboard | MusicCulture";
 $currentPage = "leaderboard";
+$pageStyles = [
+    "/assets/css/leaderboard.css"
+];
 
 require_once "../middleware/auth.php";
 require_once "../config/db.php";
@@ -27,9 +30,18 @@ $stmt = $pdo->query("
 $leaders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<h1>🏆 Music Quiz Leaderboard</h1>
+<div class="leaderboard-page">
 
-<table border="1" cellpadding="10" cellspacing="0" width="100%">
+    <div class="leaderboard-header">
+        <h1>🏆 Music Quiz Leaderboard</h1>
+        <p>See how you compare with other musicians in the community.</p>
+    </div>
+
+    <div class="leaderboard-card">
+
+        <div class="leaderboard-table-wrapper">
+
+            <table class="leaderboard-table">
 
 <tr>
     <th>Rank</th>
@@ -120,11 +132,11 @@ endforeach;
 
 ?>
 
-</table>
+            </table>
 
+        </div>
 
-
-
+    </div>
 
 </div>
 
