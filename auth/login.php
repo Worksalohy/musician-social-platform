@@ -29,45 +29,73 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../assets/css/auth.css">
+
+    <title>Log in | MusicCulture</title>
 </head>
 <body>
 
-<h2>Login</h2>
+    <main class="auth-card">
 
-<?php if (isset($error)): ?>
-    <p style="color:red;">
-        <?php echo $error; ?>
-    </p>
-<?php endif; ?>
+        <p class="auth-brand">MUSICCULTURE</p>
 
-<form method="POST">
+        <h1>Welcome back</h1>
 
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required
-    >
+        <p class="auth-intro">
+            Log in to your MusicCulture account.
+        </p>
 
-    <br><br>
+        <?php if (isset($error)): ?>
+            <p class="auth-error" role="alert">
+                <?= htmlspecialchars($error); ?>
+            </p>
+        <?php endif; ?>
 
-    <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-    >
+        <form method="POST" class="auth-form">
 
-    <br><br>
+            <div class="form-group">
+                <label for="email">Email</label>
 
-    <button type="submit">
-        Login
-    </button>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
 
-</form>
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="auth-button">
+                Log in
+            </button>
+
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="register.php">Create one</a>
+        </p>
+
+    </main>
 
 </body>
 </html>
