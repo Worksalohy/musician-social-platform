@@ -161,7 +161,6 @@ $musicLevel = $stmt->fetchColumn();
 
 </div>
 
-<hr>
 
 <!-- Feed -->
 <?php require_once "feed.php"; ?>
