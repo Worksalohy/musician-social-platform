@@ -82,6 +82,10 @@ if ($trainingLevel === null || !isset($availableLevels[$trainingLevel])) {
 
             <?php endforeach; ?>
 
+            <a href="../index.php" class="training-level training-back">
+                ← Back to Music Training
+            </a>
+
         </div>
 
     </main>

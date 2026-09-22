@@ -1,17 +1,82 @@
+.training-levels {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 420px;
+    margin: 2rem auto;
+}
+
+.training-levels .training-level {
+    display: block;
+    padding: 1rem 1.25rem;
+    border: 2px solid #2563eb;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    color: #0f172a;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.training-levels .training-level:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.training-levels .training-back {
+    margin-top: 0.5rem;
+    border-color: #cbd5e1;
+    background-color: #ffffff;
+    color: #475569;
+}
+
+.training-levels .training-back:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
 .ear-training {
-    position: relative;
-    height: 2.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    min-height: 3rem;
+    margin-bottom: 2rem;
+}
+
+#play-button,
+#next-button {
+    min-width: 130px;
+    padding: 0.75rem 1.25rem;
+    border: 0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 #play-button {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+#play-button:hover {
+    background-color: #1d4ed8;
 }
 
 #next-button {
-    position: absolute;
-    left: calc(50% + 4.5rem);
+    background-color: #0f172a;
+    color: #ffffff;
+}
+
+#next-button:hover {
+    background-color: #1e293b;
 }
 
 .answer-feedback {
@@ -57,4 +122,76 @@
 .accuracy-needs-practice {
     color: #f59e0b;
     font-weight: 700;
+}
+
+.training-game {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.ear-progress {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.training-game > p:not(.ear-progress) {
+    margin-bottom: 1.5rem;
+    color: #475569;
+}
+
+.interval-choices {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.interval-choices h2 {
+    margin-bottom: 1.25rem;
+    font-size: 1.2rem;
+    color: #0f172a;
+}
+
+.interval-choices {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.interval-choices h2 {
+    grid-column: 1 / -1;
+}
+
+.interval-answer {
+    padding: 0.75rem 0.5rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.interval-answer:last-child {
+    grid-column: 2;
+}
+
+.interval-answer:hover {
+    border-color: #2563eb;
+    background-color: #eff6ff;
+    color: #2563eb;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 500px) {
+    .interval-choices {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
