@@ -142,32 +142,24 @@ $musicLevel = $stmt->fetchColumn();
 </div>
 
 
-
-<a href="../notifications/notifications.php">
-    Notifications
-    <?php if ($unreadCount > 0): ?>
-        (<?= $unreadCount ?>)
-    <?php endif; ?>
-</a>
-
-<a class="profile-link" href="../profile/profile.php">
-    My profile
-</a>
-
-<a href="../auth/logout.php">
-    Logout
-</a>
-
 <!-- Create post form -->
-<form action="../posts/create_post.php" method="POST">
-    <textarea
-        name="content"
-        placeholder="Share something with musicians..."
-        required
-    ></textarea>
+<div class="create-post-card">
 
-    <button type="submit">Post</button>
-</form>
+        <h2>Share with the community</h2>
+
+        <p>Share your thoughts, music, or experience with other musicians.</p>
+
+    <form action="../posts/create_post.php" method="POST">
+        <textarea
+            name="content"
+            placeholder="Share something with musicians..."
+            required
+        ></textarea>
+
+        <button type="submit">Post</button>
+    </form>
+
+</div>
 
 <hr>
 

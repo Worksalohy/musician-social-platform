@@ -93,3 +93,61 @@
     margin-top:15px;
 
 }
+
+/* =====================================
+   CREATE POST
+===================================== */
+
+.create-post-card {
+    background: #6C63FF;
+    color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.create-post-card h2 {
+    margin: 0 0 10px;
+    color: #ffffff;
+}
+
+.create-post-card p {
+    margin: 0 0 20px;
+    color: #ffffff;
+}
+
+.create-post-card textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.5;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.create-post-card textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+.create-post-card button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #6C63FF;
+    font-size: 14px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.create-post-card button:hover {
+    background: #f8fafc;
+}
