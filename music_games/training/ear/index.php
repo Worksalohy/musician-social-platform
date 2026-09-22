@@ -166,10 +166,9 @@ $pageStyles = [
         </button>
 
         <button
-            type="submit"
+            type="button"
             id="next-button"
             class="next-button"
-            form="ear-answer-form"
             hidden
         >
             <?= $_SESSION['ear_training']['current'] === 9

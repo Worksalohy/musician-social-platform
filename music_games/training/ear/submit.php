@@ -72,12 +72,58 @@ $_SESSION['ear_training']['current']++;
 // ------------------------------------------------------------
 
 if ($_SESSION['ear_training']['current'] >= 10) {
+
+    if (
+        isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+        $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest'
+    ) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'completed' => true,
+            'redirect' => 'result.php'
+        ]);
+        exit;
+    }
+
     header("Location: result.php");
     exit;
 }
 
 
-// Redirect to next question with the selected level
+// ------------------------------------------------------------
+// Return next challenge for AJAX requests
+// ------------------------------------------------------------
+
+if (
+    isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest'
+) {
+
+    $nextChallenge =
+        $_SESSION['ear_training']['challenges']
+        [$_SESSION['ear_training']['current']];
+
+    header('Content-Type: application/json');
+
+    echo json_encode([
+        'completed' => false,
+        'current' => $_SESSION['ear_training']['current'],
+        'challenge' => [
+            'first_note' => $nextChallenge['first_note'],
+            'second_note' => $nextChallenge['second_note'],
+            'type' => $nextChallenge['type'],
+            'semitones' => $nextChallenge['semitones']
+        ]
+    ]);
+
+    exit;
+}
+
+
+// ------------------------------------------------------------
+// Normal request fallback
+// ------------------------------------------------------------
+
 $level = urlencode($_SESSION['ear_training']['level']);
 
 header("Location: index.php?level={$level}");

@@ -183,3 +183,77 @@ answerButtons.forEach((button) => {
     });
 
 });
+
+// ------------------------------------------------------------
+// Next Challenge
+// ------------------------------------------------------------
+
+nextButton.addEventListener("click", async () => {
+
+    const formData = new FormData();
+
+    formData.append(
+        "selected_interval",
+        selectedIntervalInput.value
+    );
+
+    try {
+
+        const response = await fetch("submit.php", {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to submit answer.");
+        }
+
+        const data = await response.json();
+
+        // ----------------------------------------------------
+        // Training complete
+        // ----------------------------------------------------
+
+        if (data.completed) {
+            window.location.href = data.redirect;
+            return;
+        }
+
+        // ----------------------------------------------------
+        // Load next challenge without page reload
+        // ----------------------------------------------------
+
+        const challenge = data.challenge;
+
+        playButton.dataset.firstNote = challenge.first_note;
+        playButton.dataset.secondNote = challenge.second_note;
+        playButton.dataset.type = challenge.type;
+        playButton.dataset.semitones = challenge.semitones;
+
+        // Reset answer state
+        firstAnswer = null;
+        selectedIntervalInput.value = "";
+        answerFeedback.textContent = "";
+        answerFeedback.className = "answer-feedback";
+
+        // Hide Next Challenge until the new answer is selected
+        nextButton.hidden = true;
+
+        // Update question number
+        document.querySelector(".ear-progress").textContent =
+            `Question ${data.current + 1} / 10`;
+
+    } catch (error) {
+
+        console.error(error);
+
+        answerFeedback.textContent =
+            "Something went wrong. Please try again.";
+
+        answerFeedback.className =
+            "answer-feedback incorrect";
+    }
+});
