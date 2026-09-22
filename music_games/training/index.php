@@ -69,7 +69,7 @@ require_once "../../includes/header.php";
 
     <div class="training-progress">
 
-        <div class="training-level current">
+        <a href="ear/index.php" class="training-level current">
 
             <p>
                 🎧 Ear Training
@@ -79,7 +79,7 @@ require_once "../../includes/header.php";
                 Improve your ability to recognize musical sounds.
             </small>
 
-        </div>
+        </a>
 
 
         <div class="training-level current">
