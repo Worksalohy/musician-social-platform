@@ -213,6 +213,84 @@ body {
 
 
 /* ------------------------------------------------------------
+   Register Page
+   ------------------------------------------------------------ */
+
+.auth-card-register {
+    width: min(100%, 560px);
+}
+
+.music-styles {
+    margin: 2px 0 0;
+    padding: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.music-styles legend {
+    padding: 0 8px;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.styles-intro {
+    margin: 0 0 16px;
+
+    color: var(--text);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.styles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.style-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 12px;
+
+    color: var(--text);
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.style-option:hover {
+    border-color: var(--primary);
+}
+
+.style-option input {
+    width: 16px;
+    height: 16px;
+
+    margin: 0;
+
+    accent-color: var(--primary);
+}
+
+@media (max-width: 480px) {
+
+    .styles-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ------------------------------------------------------------
    Responsive
    ------------------------------------------------------------ */
 

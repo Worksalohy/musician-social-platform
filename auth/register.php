@@ -69,24 +69,115 @@ exit;
 }
 ?>
 
-<form method="POST">
-    <input type="text" name="username" placeholder="Username"><br>
-    <input type="email" name="email" placeholder="Email"><br>
-    <input type="password" name="password" placeholder="Password"><br>
-    <input type="text" name="instrument" placeholder="Instrument (piano, sax...)"><br>
-    <p><strong>Musical Styles</strong></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <?php foreach ($musicStyles as $style): ?>
-        <label>
-            <input
-                type="checkbox"
-                name="music_styles[]"
-                value="<?= $style['id']; ?>"
-            >
-            <?= htmlspecialchars($style['name']); ?>
-        </label><br>
-    <?php endforeach; ?>
+    <link rel="stylesheet" href="../assets/css/auth.css">
 
-<br>
-    <button type="submit">Register</button>
-</form>
+    <title>Create account | MusicCulture</title>
+</head>
+<body>
+
+    <main class="auth-card auth-card-register">
+
+        <p class="auth-brand">MUSICCULTURE</p>
+
+        <h1>Create your account</h1>
+
+        <p class="auth-intro">
+            Join MusicCulture and connect with other musicians.
+        </p>
+
+        <form method="POST" class="auth-form">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="At least 6 characters"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="instrument">Instrument</label>
+
+                <input
+                    type="text"
+                    id="instrument"
+                    name="instrument"
+                    placeholder="e.g. Piano, Saxophone, Guitar"
+                >
+            </div>
+
+            <fieldset class="music-styles">
+                <legend>Musical Styles</legend>
+
+                <p class="styles-intro">
+                    Select the styles you enjoy playing.
+                </p>
+
+                <div class="styles-grid">
+                    <?php foreach ($musicStyles as $style): ?>
+                        <label class="style-option">
+                            <input
+                                type="checkbox"
+                                name="music_styles[]"
+                                value="<?= $style['id']; ?>"
+                            >
+                            <span>
+                                <?= htmlspecialchars($style['name']); ?>
+                            </span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="auth-button">
+                Create account
+            </button>
+
+        </form>
+
+        <p class="auth-footer">
+            Already have an account?
+            <a href="login.php">Log in</a>
+        </p>
+
+    </main>
+
+</body>
+</html>
