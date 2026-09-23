@@ -138,7 +138,7 @@ if ($level === 3 && $percentage >= 70) {
     $stmt = $pdo->prepare("
         UPDATE users
         SET skill_level = 4,
-            music_level = 'Expert'
+        music_level = 'Expert'
         WHERE id = ?
     ");
 
