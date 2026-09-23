@@ -43,3 +43,63 @@
         font-size: 1.05rem;
     }
 }
+
+.game-question {
+    margin: 25px 0;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+
+    h3 {
+        margin: 0 0 10px;
+    }
+
+    p {
+        margin-bottom: 15px;
+    }
+}
+
+.game-audio {
+    width: 100%;
+    margin: 10px 0 20px;
+}
+
+.game-answer {
+    margin: 10px 0;
+
+    label {
+        display: block;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+
+        &:hover {
+            background-color: #f8fafc;
+            border-color: #2563eb;
+        }
+    }
+
+    input {
+        margin-right: 8px;
+    }
+}
+
+.game-submit {
+    display: block;
+    margin: 30px auto;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}

@@ -129,6 +129,10 @@ if (!empty($games)) {
     $_SESSION['played_game_level'] = $games[0]['level'];
 }
 
+$pageStyles = [
+    "/music_games/assets/css/music_games.css"
+];
+
 $pageScripts = [
     "/assets/js/music_games.js"
 ];
@@ -175,7 +179,7 @@ require_once "../includes/header.php";
             </audio>
 
 
-            <div>
+            <div class="game-answer">
 
                 <label>
                     <input 
@@ -191,7 +195,7 @@ require_once "../includes/header.php";
             </div>
 
 
-            <div>
+            <div class="game-answer">
 
                 <label>
                     <input 
@@ -206,7 +210,7 @@ require_once "../includes/header.php";
             </div>
 
 
-            <div>
+            <div class="game-answer">
 
                 <label>
                     <input 
@@ -221,7 +225,7 @@ require_once "../includes/header.php";
             </div>
 
 
-            <div>
+            <div class="game-answer">
 
                 <label>
                     <input 
@@ -242,7 +246,7 @@ require_once "../includes/header.php";
         <?php endforeach; ?>
 
 
-        <button type="submit">
+        <button type="submit" class="game-submit">
             Submit Game
         </button>
 
