@@ -97,7 +97,7 @@ $musicTrainingUnlocked = (
 
         
         <!-- Level 1 -->
-<div class="training-level completed">
+<div class="training-level <?= in_array(1, $completedQuizLevels) ? 'completed' : 'locked'; ?>">
 
     <?php if (in_array(1, $completedQuizLevels)): ?>
 
@@ -125,8 +125,8 @@ $musicTrainingUnlocked = (
 
         
         <!-- Level 2 -->
-<div class="training-level completed">
-
+<div class="training-level <?= in_array(2, $completedQuizLevels) ? 'completed' : 'locked'; ?>">
+    
     <?php if (in_array(2, $completedQuizLevels)): ?>
 
         <p>
