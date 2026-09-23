@@ -161,6 +161,10 @@ $pageStyles = [
         Accuracy: <?= $percentage ?>%
     </p>
 
+    <a href="../index.php" class="training-back-link">
+        Back to Music Training
+    </a>
+
 </main>
 
 <?php require_once "../../../includes/footer.php"; ?>

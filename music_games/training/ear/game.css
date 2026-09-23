@@ -190,6 +190,12 @@
     transform: translateY(-2px);
 }
 
+.training-back-link {
+    display: block;
+    text-align: left;
+    margin-top: 1.5rem;
+}
+
 @media (max-width: 500px) {
     .interval-choices {
         grid-template-columns: repeat(2, 1fr);
