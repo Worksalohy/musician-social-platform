@@ -82,7 +82,7 @@ require_once "../../includes/header.php";
         </a>
 
 
-        <div class="training-level current">
+        <div class="training-level locked">
 
             <p>
                 🎹 Melody Training
@@ -95,7 +95,7 @@ require_once "../../includes/header.php";
         </div>
 
 
-        <div class="training-level current">
+        <div class="training-level locked">
 
             <p>
                 🎼 Chord Training
@@ -103,6 +103,19 @@ require_once "../../includes/header.php";
 
             <small>
                 Develop your chord recognition skills.
+            </small>
+
+        </div>
+
+
+        <div class="training-level locked">
+
+            <p>
+                🥁 Rhythm Training
+            </p>
+
+            <small>
+                Develop your sense of rhythm and timing.
             </small>
 
         </div>
@@ -116,7 +129,7 @@ require_once "../../includes/header.php";
 
 
     <a href="../index.php">
-        Back to Music Training Overview
+        Back to Music Games
     </a>
 
 </div>
