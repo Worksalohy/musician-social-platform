@@ -239,7 +239,13 @@ nextButton.addEventListener("click", async () => {
         answerFeedback.textContent = "";
         answerFeedback.className = "answer-feedback";
 
-        // Hide Next Challenge until the new answer is selected
+        // Update button for the current question
+        nextButton.textContent =
+            data.current === 9
+                ? "Finish Training"
+                : "Next Challenge";
+
+        // Hide button until the new answer is selected
         nextButton.hidden = true;
 
         // Update question number
