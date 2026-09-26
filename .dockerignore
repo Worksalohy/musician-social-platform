@@ -1,0 +1,6 @@
+.git
+.gitignore
+.env
+.sass-cache
+README.md
+database_schema.sql
