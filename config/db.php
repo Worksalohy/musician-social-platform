@@ -1,9 +1,13 @@
 <?php
 
-$host = getenv("DB_HOST");
-$dbname = getenv("DB_NAME");
-$user = getenv("DB_USER");
-$pass = getenv("DB_PASSWORD");
+if (getenv("DB_HOST")) {
+    $host = getenv("DB_HOST");
+    $dbname = getenv("DB_NAME");
+    $user = getenv("DB_USER");
+    $pass = getenv("DB_PASSWORD");
+} else {
+    require __DIR__ . '/db.local.php';
+}
 
 try {
     $pdo = new PDO(
